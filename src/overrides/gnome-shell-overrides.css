@@ -1,0 +1,357 @@
+/* ===================================================================== *
+ * GreenPhosphor-CRT  —  overrides appended onto Graphite-green-Dark
+ * Top panel styled as a green-phosphor CRT readout: deep green-black
+ * ground, phosphor-green text/icons with a soft glow, monospace clock.
+ * Everything else (menus, quick settings, calendar) stays Graphite-green.
+ * ===================================================================== */
+
+#panel {
+  background-color: rgba(6, 13, 8, 0.70);
+  color: #28A038;
+}
+#panel:overview {
+  background-color: rgba(6, 13, 8, 0.32);
+}
+
+#panel .panel-button {
+  color: #28A038;
+}
+#panel .panel-button StLabel,
+#panel .panel-button StIcon {
+  text-shadow: 0 0 3px rgba(74, 224, 112, 0.40);
+  icon-shadow: 0 0 3px rgba(74, 224, 112, 0.40);
+}
+
+/* hover / focus: NO fill — brighten the icon and intensify the glow.
+ * Graphite fills the round button with an inset box-shadow, so kill that too. */
+#panel .panel-button:hover,
+#panel .panel-button:focus,
+#panel .panel-button:active:hover,
+#panel .panel-button:focus:hover,
+#panel .panel-button:checked:hover {
+  color: #5CE673;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+#panel .panel-button:hover StLabel,
+#panel .panel-button:hover StIcon,
+#panel .panel-button:focus StLabel,
+#panel .panel-button:focus StIcon {
+  text-shadow: 0 0 7px rgba(92, 230, 115, 0.85);
+  icon-shadow: 0 0 7px rgba(92, 230, 115, 0.85);
+}
+/* open menu (checked/active): brightest + strongest glow, still no fill */
+#panel .panel-button:active,
+#panel .panel-button:checked,
+#panel .panel-button:overview {
+  color: #86FFA0;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+/* the clock renders its hover/active fill on the inner .clock element */
+#panel .panel-button.clock-display .clock,
+#panel .panel-button:hover.clock-display .clock,
+#panel .panel-button:focus.clock-display .clock,
+#panel .panel-button:active.clock-display .clock,
+#panel .panel-button:checked.clock-display .clock {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+#panel .panel-button:active StLabel,
+#panel .panel-button:active StIcon,
+#panel .panel-button:checked StLabel,
+#panel .panel-button:checked StIcon,
+#panel .panel-button:overview StLabel,
+#panel .panel-button:overview StIcon {
+  text-shadow: 0 0 9px rgba(134, 255, 160, 0.95);
+  icon-shadow: 0 0 9px rgba(134, 255, 160, 0.95);
+}
+
+/* retro monospace, tabular clock */
+#panel .clock-display,
+#panel .clock-display .clock {
+  font-family: "Source Code Pro", "DejaVu Sans Mono", monospace;
+  font-feature-settings: "tnum";
+  letter-spacing: 0.4px;
+}
+
+/* ===== Click-out popups (menus / quick settings / calendar) ===== *
+ * Re-ground the shared popup surface in the same deep green-black as
+ * the panel, with a muted green edge. Menu items / accent stay green. */
+.popup-menu .popup-menu-content {
+  background-color: #080B08;
+  border: 2px solid #2E7D3E;
+}
+.quick-settings .quick-toggle,
+.quick-settings .quick-slider,
+.quick-settings .quick-toggle-menu {
+  background-color: #131612;
+}
+
+/* notification cards in the calendar popover → near-black like Tilix (not Graphite grey) */
+.message,
+.message-view .message,
+.popup-menu .message {
+  background-color: #101310 !important;
+}
+.message:second-in-stack {
+  background-color: #0C0F0C !important;
+}
+.message:lower-in-stack {
+  background-color: #0A0D0A !important;
+}
+
+/* green text on near-black popup surfaces (menus + calendar).
+ * Anything sitting on a green highlight/accent stays light, so text
+ * never lands green-on-green. */
+.popup-menu .popup-menu-item {
+  color: #33B84A !important;
+}
+.popup-menu .popup-menu-item:hover,
+.popup-menu .popup-menu-item:focus,
+.popup-menu .popup-menu-item:active,
+.popup-menu .popup-menu-item:checked,
+.popup-menu .popup-menu-item:selected {
+  color: #EAFFF0 !important;
+}
+.calendar .calendar-month-label,
+.calendar .calendar-day-heading,
+.calendar .calendar-week-number,
+.calendar .calendar-day {
+  color: #33B84A !important;
+}
+.calendar .calendar-today,
+.calendar .calendar-day:hover,
+.calendar .calendar-day:focus,
+.calendar .calendar-day:active,
+.calendar .calendar-day:selected {
+  color: #EAFFF0 !important;
+}
+
+/* notifications: title / source / time / body → green */
+.message-notification-group .message-group-header .message-group-title,
+.message .message-header .message-header-content .message-source-title,
+.message .message-header .message-header-content .event-time,
+.message .message-box .message-content,
+.message .message-box .message-content .message-title,
+.message .message-body {
+  color: #33B84A !important;
+}
+
+/* calendar side panels: events / world clocks / weather → green */
+.events-button .events-title,
+.events-button .event-time,
+.events-button .events-placeholder,
+.world-clocks-button .world-clocks-header,
+.world-clocks-button .world-clocks-city,
+.world-clocks-button .world-clocks-time,
+.world-clocks-button .world-clocks-timezone,
+.weather-button .weather-header,
+.weather-button .weather-header.location,
+.weather-button .weather-forecast-time,
+.weather-button .weather-forecast-temp {
+  color: #33B84A !important;
+}
+/* keep those buttons' text light while hovered (green highlight bg) */
+.events-button:hover, .events-button:focus,
+.world-clocks-button:hover, .world-clocks-button:focus,
+.weather-button:hover, .weather-button:focus {
+  color: #EAFFF0 !important;
+}
+.events-button:hover .events-title, .events-button:focus .events-title,
+.events-button:hover .event-time, .events-button:focus .event-time,
+.world-clocks-button:hover .world-clocks-header, .world-clocks-button:focus .world-clocks-header,
+.world-clocks-button:hover .world-clocks-city, .world-clocks-button:focus .world-clocks-city,
+.world-clocks-button:hover .world-clocks-time, .world-clocks-button:focus .world-clocks-time,
+.world-clocks-button:hover .world-clocks-timezone, .world-clocks-button:focus .world-clocks-timezone,
+.weather-button:hover .weather-header, .weather-button:focus .weather-header,
+.weather-button:hover .weather-forecast-time, .weather-button:focus .weather-forecast-time {
+  color: #EAFFF0 !important;
+}
+
+/* ===== consolidated green text for the remaining near-black labels ===== */
+/* date-menu heading: "Tuesday" / "July 14 2026" (cascades to day/date labels) */
+.datemenu-today-button {
+  color: #33B84A !important;
+}
+/* events placeholder "No Events" */
+.events-button .events-list {
+  color: #33B84A !important;
+}
+/* notification header: source name + timestamp + group title */
+.message .message-header,
+.message-notification-group .message-group-header .message-group-title {
+  color: #33B84A !important;
+}
+
+/* quick settings: battery %, and tile titles/subtitles.
+ * Green while the tile is OFF; light while ON (green background). */
+.quick-settings-system-item .power-item {
+  color: #33B84A !important;
+}
+.quick-toggle .quick-toggle-title {
+  color: #33B84A !important;
+}
+.quick-toggle .quick-toggle-subtitle {
+  color: #2E9E43 !important;
+}
+.quick-toggle:checked .quick-toggle-title,
+.quick-toggle:checked .quick-toggle-subtitle,
+.quick-menu-toggle:checked .quick-toggle-title,
+.quick-menu-toggle:checked .quick-toggle-subtitle {
+  color: #EAFFF0 !important;
+}
+
+/* === stubborn datemenu leaf labels: ISOLATED single-class rules ===
+ * Confirmed class names from GNOME 48.7 dateMenu.js. Kept as separate
+ * one-selector rules so a parser hiccup on one can't drop the others. */
+.day-label { color: #33B84A !important; }
+.date-label { color: #33B84A !important; }
+.calendar-month-label { color: #33B84A !important; }
+.world-clocks-header { color: #33B84A !important; }
+.world-clocks-city { color: #33B84A !important; }
+.world-clocks-time { color: #33B84A !important; }
+.world-clocks-timezone { color: #33B84A !important; }
+.weather-header { color: #33B84A !important; }
+.weather-forecast-time { color: #33B84A !important; }
+.weather-forecast-temp { color: #33B84A !important; }
+.events-title { color: #33B84A !important; }
+.event-time { color: #33B84A !important; }
+
+/* === last stragglers: weekends, arrows, icons, DND / Clear === */
+/* weekend dates — Graphite pins these white with !important at (0,3,0),
+ * so we must match that specificity + !important and land later. */
+.calendar .calendar-day.calendar-weekend { color: #1F8235 !important; }
+.calendar .calendar-day.calendar-today   { color: #EAFFF0 !important; }
+
+/* month prev/next arrow icons */
+.calendar .pager-button { color: #33B84A !important; }
+.calendar .calendar-change-month-back StIcon,
+.calendar .calendar-change-month-forward StIcon { color: #33B84A !important; }
+
+/* notification close / expand / collapse icons */
+.message-close-button StIcon,
+.message-expand-button StIcon,
+.message-collapse-button StIcon { color: #33B84A !important; }
+
+/* "Do Not Disturb" label + "Clear" button */
+.message-list-controls { color: #33B84A !important; }
+.message-list-clear-button { color: #33B84A !important; }
+
+/* quick settings: top system icons (screenshot/settings/lock/power) + slider icon */
+.quick-settings-system-item .icon-button StIcon { color: #33B84A !important; }
+.quick-slider StIcon { color: #33B84A !important; }
+
+/* quick toggle tile icons: green while OFF, light while ON (green bg) */
+.quick-toggle StIcon { color: #33B84A !important; }
+.quick-toggle:checked StIcon,
+.quick-menu-toggle:checked StIcon { color: #EAFFF0 !important; }
+
+/* weather forecast icons (symbolic) → green */
+.weather-forecast-icon { color: #33B84A !important; }
+
+/* menu item hover/selected: Graphite uses a grey (white 0.12) highlight;
+ * re-tint it green so every menu (incl. Syncthing's) matches the theme. */
+.popup-menu .popup-menu-item:focus,
+.popup-menu .popup-menu-item:hover,
+.popup-menu .popup-menu-item.selected {
+  background-color: rgba(74, 214, 100, 0.20) !important;
+}
+.popup-menu .popup-menu-item:active,
+.popup-menu .popup-menu-item.selected:active {
+  background-color: rgba(74, 214, 100, 0.34) !important;
+}
+
+/* "No Events" placeholder — real class is event-placeholder (singular) */
+.event-placeholder { color: #33B84A !important; }
+
+/* menu separators: grey line + section label ("OTP Secrets" etc.) → green */
+.popup-separator-menu-item,
+.popup-separator-menu-item StLabel { color: #33B84A !important; }
+.popup-separator-menu-item .popup-separator-menu-item-separator {
+  background-color: rgba(74, 214, 100, 0.28) !important;
+}
+
+/* scrollbar handle: grey (white 0.3) → green, in all popup scroll views */
+StScrollBar StButton#vhandle,
+StScrollBar StButton#hhandle,
+.popup-sub-menu StScrollBar StButton#vhandle,
+.popup-sub-menu StScrollBar StButton#hhandle {
+  background-color: rgba(74, 214, 100, 0.40) !important;
+}
+
+/* quick-toggle expand ">" arrows. The menu button mirrors the tile's
+ * checked state (bind_property 'checked' in quickSettings.js), so:
+ *   OFF tile (unchecked) → clear green;  ON tile (checked, green bg) → light. */
+.quick-toggle-has-menu .quick-toggle-menu-button,
+.quick-toggle-has-menu .quick-toggle-menu-button StIcon {
+  color: #33B84A !important;
+}
+.quick-toggle-has-menu .quick-toggle-menu-button:checked,
+.quick-toggle-has-menu .quick-toggle-menu-button:checked StIcon {
+  color: #EAFFF0 !important;
+}
+
+/* Rocketbar2 window buttons: no fill; the focused (active) window's icon
+ * gets a green glow instead of the default dark drop-shadow — matches the
+ * panel's "glow, not fill" hover treatment. */
+.rocketbar__button:hover,
+.rocketbar__button:focus,
+.rocketbar__button:active {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.rocketbar__button:active StIcon {
+  icon-shadow: 0 0 6px rgba(92, 230, 115, 0.90) !important;
+}
+
+/* ============================================================= *
+ * Remaining shell surfaces → green-black grounds.
+ * (green highlights come from the system accent colour already)
+ * ============================================================= */
+
+/* OSD (volume/brightness), Alt+Tab switcher, workspace switcher,
+ * resize popup, screenshot panel — all share one Graphite rule (#212121). */
+.screenshot-ui-panel,
+.workspace-switcher-container,
+.switcher-list,
+.resize-popup,
+.osd-window {
+  background-color: #080B08 !important;
+}
+/* switcher keyboard-highlight (outlined but not selected): grey → faint green */
+.switcher-list .item-box:outlined {
+  background-color: rgba(74, 214, 100, 0.18) !important;
+}
+
+/* slide-in notification banners (#2C2C2C → green-black) */
+.notification-banner,
+.notification-banner:hover,
+.notification-banner:focus {
+  background-color: #0B140D !important;
+}
+
+/* modal dialogs (auth / run / close-confirm) + app-folder popup */
+.modal-dialog { background-color: #0B140D !important; }
+.app-folder-dialog { background-color: #0B140D !important; }
+
+/* overview: window title captions (#2C2C2C → green-black, green text) */
+.window-caption {
+  background-color: #0B140D !important;
+  color: #33B84A !important;
+}
+
+/* overview dash (dock) ground */
+#dash .dash-background {
+  background-color: rgba(8, 11, 8, 0.65) !important;
+}
+
+/* lock-screen clock → green (best-effort selectors) */
+.unlock-dialog-clock,
+.unlock-dialog-clock .clock,
+.unlock-dialog-clock-time,
+.unlock-dialog-clock-date,
+.screen-shield-clock,
+.screen-shield-clock .clock {
+  color: #33B84A !important;
+}

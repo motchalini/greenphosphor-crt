@@ -1,0 +1,159 @@
+/* ===================================================================== *
+ * GreenPhosphor-CRT — GTK3 overrides appended onto Graphite-green-Dark
+ * Chrome (headerbar, sidebar, menus) = phosphor green on green-black;
+ * content stays readable: green-tinted off-white text on deep grounds.
+ * ===================================================================== */
+
+/* ---- palette (named colors, for apps that read them) ---------------- */
+@define-color theme_fg_color #D8E8DA;
+@define-color theme_text_color #D8E8DA;
+@define-color theme_bg_color #0C120D;
+@define-color theme_base_color #080B08;
+@define-color theme_selected_bg_color #28A038;
+@define-color theme_selected_fg_color #071008;
+@define-color insensitive_bg_color #0C120D;
+@define-color insensitive_fg_color rgba(216, 232, 218, 0.45);
+@define-color insensitive_base_color #0A0E0A;
+@define-color theme_unfocused_fg_color #D8E8DA;
+@define-color theme_unfocused_text_color #D8E8DA;
+@define-color theme_unfocused_bg_color #0C120D;
+@define-color theme_unfocused_base_color #080B08;
+@define-color theme_unfocused_selected_bg_color #1C7A2C;
+@define-color theme_unfocused_selected_fg_color #071008;
+@define-color borders rgba(74, 214, 100, 0.16);
+@define-color unfocused_borders rgba(74, 214, 100, 0.12);
+@define-color success_color #33B84A;
+@define-color wm_title #33B84A;
+@define-color wm_unfocused_title rgba(51, 184, 74, 0.55);
+@define-color wm_highlight rgba(74, 214, 100, 0.10);
+@define-color wm_bg #080B08;
+@define-color wm_unfocused_bg #0A0D0A;
+@define-color content_view_bg #0C120D;
+@define-color text_view_bg #080B08;
+@define-color placeholder_text_color rgba(140, 180, 148, 0.55);
+
+/* ---- window ground --------------------------------------------------- */
+.background {
+  background-color: #0C120D;
+  color: #D8E8DA;
+}
+
+/* ---- headerbar / titlebar: CRT chrome -------------------------------- */
+headerbar,
+.titlebar {
+  background-color: #080B08;
+  background-image: none;
+  color: #33B84A;
+}
+headerbar:backdrop,
+.titlebar:backdrop {
+  background-color: #0A0D0A;
+  color: rgba(51, 184, 74, 0.55);
+}
+headerbar .title { color: #33B84A; }
+headerbar .subtitle { color: rgba(51, 184, 74, 0.70); }
+
+/* ---- menus & popovers ------------------------------------------------- */
+menu, .menu, .context-menu {
+  background-color: #0B140D;
+}
+menu menuitem:hover,
+.menu menuitem:hover,
+.context-menu menuitem:hover {
+  background-color: #28A038;
+  color: #071008;
+}
+menubar, .menubar {
+  background-color: #080B08;
+  color: #33B84A;
+}
+popover.background {
+  background-color: #0B140D;
+}
+
+/* ---- sidebars --------------------------------------------------------- */
+.sidebar,
+placessidebar,
+stacksidebar {
+  background-color: #0A0F0B;
+}
+
+/* ---- lists & views ---------------------------------------------------- */
+.view, list {
+  background-color: #080B08;
+  color: #D8E8DA;
+}
+list row:selected,
+.view:selected,
+iconview:selected {
+  background-color: #28A038;
+  color: #071008;
+}
+treeview.view {
+  background-color: #080B08;
+  color: #D8E8DA;
+}
+treeview.view:selected {
+  background-color: #28A038;
+  color: #071008;
+}
+
+/* ---- text inputs ------------------------------------------------------ */
+entry {
+  background-color: #080B08;
+  color: #D8E8DA;
+}
+entry:focus { border-color: #28A038; }
+textview text {
+  background-color: #080B08;
+  color: #D8E8DA;
+}
+selection {
+  background-color: #28A038;
+  color: #071008;
+}
+
+/* ---- bars (toolbar, search, action, tabs) ------------------------------ */
+toolbar, .toolbar,
+searchbar > revealer > box,
+actionbar > revealer > box {
+  background-color: #0A0F0B;
+}
+notebook > header { background-color: #0A0F0B; }
+notebook > header tab:checked { color: #33B84A; }
+
+/* ---- controls ---------------------------------------------------------- */
+button.suggested-action {
+  background-color: #28A038;
+  color: #071008;
+  border-color: #28A038;
+}
+button.suggested-action:hover {
+  background-color: #33B84A;
+  color: #071008;
+}
+switch:checked {
+  background-color: #28A038;
+  border-color: #28A038;
+}
+check:checked, radio:checked {
+  background-color: #28A038;
+  border-color: #28A038;
+  color: #071008;
+}
+progressbar > trough > progress,
+scale > trough > highlight {
+  background-color: #28A038;
+}
+scrollbar slider { background-color: rgba(74, 214, 100, 0.30); }
+scrollbar slider:hover { background-color: rgba(74, 214, 100, 0.45); }
+
+/* ---- misc --------------------------------------------------------------- */
+*:link { color: #4ACC5F; }
+tooltip.background {
+  background-color: rgba(8, 11, 8, 0.95);
+  color: #33B84A;
+  border: 1px solid rgba(74, 214, 100, 0.25);
+}
+separator { background-color: rgba(74, 214, 100, 0.10); }
+frame > border { border-color: rgba(74, 214, 100, 0.14); }

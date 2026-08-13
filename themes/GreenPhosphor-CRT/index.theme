@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=GreenPhosphor-CRT
+Comment=Green-phosphor CRT theme — deep green-black grounds, muted phosphor text, subtle glow
+Encoding=UTF-8
+
+[X-GNOME-Metatheme]
+GtkTheme=GreenPhosphor-CRT
+MetacityTheme=GreenPhosphor-CRT
+IconTheme=Tela-green-dark
+CursorTheme=Adwaita
+ButtonLayout=appmenu:close

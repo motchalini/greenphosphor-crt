@@ -1,0 +1,141 @@
+/* ===================================================================== *
+ * GreenPhosphor-CRT — GTK4 / libadwaita overrides appended onto
+ * Graphite-green-Dark. Named colors + CSS variables cover libadwaita
+ * apps (linked via ~/.config/gtk-4.0); widget rules fix plain-GTK4
+ * surfaces where the vendored base hardcodes literal greys.
+ * ===================================================================== */
+
+/* ---- legacy named colors ---------------------------------------------- */
+@define-color theme_fg_color #D8E8DA;
+@define-color theme_text_color #D8E8DA;
+@define-color theme_bg_color #0C120D;
+@define-color theme_base_color #080B08;
+@define-color theme_selected_bg_color #28A038;
+@define-color theme_selected_fg_color #071008;
+@define-color borders rgba(74, 214, 100, 0.16);
+@define-color success_color #33B84A;
+@define-color wm_title #33B84A;
+@define-color wm_bg #080B08;
+@define-color content_view_bg #0C120D;
+@define-color text_view_bg #080B08;
+@define-color placeholder_text_color rgba(140, 180, 148, 0.55);
+
+/* ---- libadwaita named colors ------------------------------------------- */
+@define-color accent_bg_color #28A038;
+@define-color accent_fg_color #071008;
+@define-color accent_color #3DBF52;
+@define-color window_bg_color #0C120D;
+@define-color window_fg_color #D8E8DA;
+@define-color view_bg_color #080B08;
+@define-color view_fg_color #D8E8DA;
+@define-color headerbar_bg_color #080B08;
+@define-color headerbar_fg_color #33B84A;
+@define-color headerbar_border_color rgba(74, 214, 100, 0.16);
+@define-color headerbar_backdrop_color #0A0D0A;
+@define-color headerbar_shade_color rgba(0, 0, 0, 0.36);
+@define-color card_bg_color #0B140D;
+@define-color card_fg_color #D8E8DA;
+@define-color card_shade_color rgba(0, 0, 0, 0.36);
+@define-color dialog_bg_color #0B140D;
+@define-color dialog_fg_color #D8E8DA;
+@define-color popover_bg_color #0B140D;
+@define-color popover_fg_color #D8E8DA;
+@define-color thumbnail_bg_color #0B140D;
+@define-color thumbnail_fg_color #D8E8DA;
+@define-color sidebar_bg_color #0A0F0B;
+@define-color sidebar_fg_color #D8E8DA;
+@define-color sidebar_backdrop_color #090D09;
+@define-color sidebar_border_color rgba(74, 214, 100, 0.12);
+@define-color sidebar_shade_color rgba(0, 0, 0, 0.30);
+@define-color secondary_sidebar_bg_color #090D0A;
+@define-color secondary_sidebar_fg_color #D8E8DA;
+@define-color secondary_sidebar_backdrop_color #080C09;
+@define-color secondary_sidebar_border_color rgba(74, 214, 100, 0.12);
+@define-color secondary_sidebar_shade_color rgba(0, 0, 0, 0.30);
+
+/* ---- libadwaita 1.6+ CSS variables -------------------------------------- */
+:root {
+  --accent-bg-color: #28A038;
+  --accent-fg-color: #071008;
+  --accent-color: #3DBF52;
+  --window-bg-color: #0C120D;
+  --window-fg-color: #D8E8DA;
+  --view-bg-color: #080B08;
+  --view-fg-color: #D8E8DA;
+  --headerbar-bg-color: #080B08;
+  --headerbar-fg-color: #33B84A;
+  --headerbar-border-color: rgba(74, 214, 100, 0.16);
+  --headerbar-backdrop-color: #0A0D0A;
+  --card-bg-color: #0B140D;
+  --card-fg-color: #D8E8DA;
+  --dialog-bg-color: #0B140D;
+  --dialog-fg-color: #D8E8DA;
+  --popover-bg-color: #0B140D;
+  --popover-fg-color: #D8E8DA;
+  --sidebar-bg-color: #0A0F0B;
+  --sidebar-fg-color: #D8E8DA;
+  --sidebar-backdrop-color: #090D09;
+  --secondary-sidebar-bg-color: #090D0A;
+  --secondary-sidebar-fg-color: #D8E8DA;
+  --secondary-sidebar-backdrop-color: #080C09;
+  --thumbnail-bg-color: #0B140D;
+  --thumbnail-fg-color: #D8E8DA;
+}
+
+/* ---- widget fixes for plain GTK4 (vendored base hardcodes greys) -------- */
+window.background {
+  background-color: #0C120D;
+  color: #D8E8DA;
+}
+headerbar {
+  background-color: #080B08;
+  color: #33B84A;
+}
+headerbar:backdrop {
+  background-color: #0A0D0A;
+  color: rgba(51, 184, 74, 0.55);
+}
+popover > contents { background-color: #0B140D; }
+menubar {
+  background-color: #080B08;
+  color: #33B84A;
+}
+placessidebar { background-color: #0A0F0B; }
+treeview.view {
+  background-color: #080B08;
+  color: #D8E8DA;
+}
+treeview.view:selected {
+  background-color: #28A038;
+  color: #071008;
+}
+notebook > header { background-color: #0A0F0B; }
+notebook > header tab:checked { color: #33B84A; }
+
+selection {
+  background-color: #28A038;
+  color: #071008;
+}
+button.suggested-action {
+  background-color: #28A038;
+  color: #071008;
+}
+button.suggested-action:hover { background-color: #33B84A; }
+switch:checked { background-color: #28A038; }
+check:checked, radio:checked {
+  background-color: #28A038;
+  border-color: #28A038;
+}
+progressbar > trough > progress,
+scale > trough > highlight {
+  background-color: #28A038;
+}
+scrollbar slider { background-color: rgba(74, 214, 100, 0.30); }
+scrollbar slider:hover { background-color: rgba(74, 214, 100, 0.45); }
+
+link { color: #4ACC5F; }
+tooltip {
+  background-color: rgba(8, 11, 8, 0.95);
+  color: #33B84A;
+  border: 1px solid rgba(74, 214, 100, 0.25);
+}

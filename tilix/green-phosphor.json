@@ -1,0 +1,20 @@
+{
+    "name": "Green Phosphor",
+    "comment": "Monochrome green CRT — dark, muted phosphor tone",
+    "use-theme-colors": false,
+    "background-color": "#080B08",
+    "foreground-color": "#28A038",
+    "use-bold-color": false,
+    "use-cursor-color": true,
+    "cursor-background-color": "#3DBF52",
+    "cursor-foreground-color": "#080B08",
+    "use-highlight-color": true,
+    "highlight-background-color": "#28A038",
+    "highlight-foreground-color": "#080B08",
+    "palette": [
+        "#080B08", "#1C7A2C", "#28A038", "#28A038",
+        "#176626", "#23902F", "#23902F", "#28A038",
+        "#114D1C", "#2EB343", "#3DBF52", "#3DBF52",
+        "#1F8A30", "#4ACC5F", "#4ACC5F", "#86D998"
+    ]
+}
