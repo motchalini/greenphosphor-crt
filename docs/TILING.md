@@ -40,16 +40,28 @@ gnome-extensions enable forge@jmmaranan.com
 (v89 で確認した仕様。フォークでも同じ機構・同じファイルで動作):
 
 - ファイル: `~/.config/forge/stylesheet/forge/stylesheet.css`
+  (**マスターコピーは本リポジトリの `src/forge/stylesheet.css`**)
 - 適用済みの内容: フォーカス窓(`.window-tiled-border`)= 明るい燐光緑
   `rgba(102,224,122,1)` 3px、分割ヒント = CRTアンバー `#FFB000`、
   スタック=アンバー/タブ=淡緑も 3px、全クラス `border-radius: 0`(スクエア)。
-  タブバー(`.window-tabbed-*`)も緑黒。
+  タブバー(`.window-tabbed-*`)も緑黒。フォーク新機能のチートシート
+  オーバーレイ(`.forge-cheatsheet*`)も緑黒に着色。
+- **注意: フォーク/本体は css バージョンが上がると(gsettings
+  `css-last-update`)このファイルを既定スタイル(サーモン色・角丸14px)で
+  上書きする**。2026-08-17 のフォーク導入時に実際に発生(旧内容は同ディレクトリの
+  `stylesheet.css.bak` に自動退避されていた)。色が変わったらマスターコピーから
+  復元して `gnome-extensions disable forge@… && enable forge@…` で再読込:
+  `cp src/forge/stylesheet.css ~/.config/forge/stylesheet/forge/stylesheet.css`
+- フォークは gsettings に `focus-border-radius`(既定14)を持つ。スクエア維持の
+  ため **0 に設定済み**(stylesheet の radius 0 と併せて両建て)。
 - **枠の太さは 3px が上限**(v89 時代の実測。gap>0 のとき枠ウィジェットが窓の
-  3px 外側に乗る設計のため。4px 以上は窓内に食い込み端の文字に被る)。
+  3px 外側に乗る設計のため。4px 以上は窓内に食い込み端の文字に被る。なお枠は
+  フォーカス窓にしか描画されず、非フォーカス窓はテーマ側の 1px 枠のみ)。
 - **枠クラスに `box-shadow` のグローを付けてはいけない**(枠は窓全面に重なる
   透明ウィジェットで、窓の内側全体が緑がかる。2026-08-16 実地確認)。
-- v89 では stylesheet に CSS コメントを書くと拡張が ERROR になった。フォークでの
-  再現は未確認だが、引き続きコメントは書かない運用にする。
+- v89 では stylesheet に CSS コメントを書くと拡張が ERROR になったが、
+  **フォークはコメント対応済み**(既定ファイル自体にコメントがあり、コメント入りで
+  ACTIVE を確認)。
 
 挙動系の設定は gsettings(引き継ぎ済み):
 
