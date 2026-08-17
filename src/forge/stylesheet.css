@@ -10,7 +10,7 @@
 }
 
 .split {
-  color: rgba(255, 176, 0, 1);
+  color: rgba(102, 224, 122, 0.55);
   opacity: 1;
   border-width: 3px;
 }
@@ -42,7 +42,7 @@
 
 .window-split-border {
   border-width: 3px;
-  border-color: rgba(255, 176, 0, 1);
+  border-color: rgba(102, 224, 122, 0.55);
   border-style: solid;
   border-radius: 0;
 }

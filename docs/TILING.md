@@ -42,7 +42,9 @@ gnome-extensions enable forge@jmmaranan.com
 - ファイル: `~/.config/forge/stylesheet/forge/stylesheet.css`
   (**マスターコピーは本リポジトリの `src/forge/stylesheet.css`**)
 - 適用済みの内容: フォーカス窓(`.window-tiled-border`)= 明るい燐光緑
-  `rgba(102,224,122,1)` 3px、分割ヒント = CRTアンバー `#FFB000`、
+  `rgba(102,224,122,1)` 3px、分割ヒント = 淡い燐光緑 `rgba(102,224,122,0.55)`
+  (2026-08-17 に CRT アンバーから変更。フォーカス枠の横でオレンジが
+  「直り残り」に見えるため)、
   スタック=アンバー/タブ=淡緑も 3px、全クラス `border-radius: 0`(スクエア)。
   タブバー(`.window-tabbed-*`)も緑黒。フォーク新機能のチートシート
   オーバーレイ(`.forge-cheatsheet*`)も緑黒に着色。
@@ -111,6 +113,9 @@ gsettings set org.gnome.shell.keybindings toggle-message-tray "['<Super>m']"
 - **画面ロックは `Super + Escape`**(忘れやすいので注意)。
 - フォーカス中の窓 = 明るい燐光緑 3px スクエア枠(窓の外側に描画・Forge)。
   全窓共通の 1px 枠はテーマ側(`decoration` / `window.csd` の box-shadow)が描く。
+- フォーカス窓の**右または下にだけ出る淡緑の線は「分割ヒント」**(次の窓が
+  開く向き。右=横並び/下=縦積み。`Super+G` で切替)。消したい場合は
+  gsettings の `split-border-toggle` を false に。
 - ダイアログ等は Forge が自動でフロート扱いにする。挙動がおかしいアプリは
   `Shift + Super + C` で常時フロートに落とす(windows.json にクラス単位で永続
   登録。フォークでは `Super + C` で個体解除できる)。
