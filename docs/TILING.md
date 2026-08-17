@@ -1,10 +1,114 @@
-# タイル型ウィンドウ管理 — Forge セットアップ
+# タイル型ウィンドウ管理 — Tiling Shell セットアップ
 
-GreenPhosphor-CRT デスクトップのタイリングは [Forge](https://github.com/forge-ext/forge)
-(i3 風の自動タイリング拡張、UUID: `forge@jmmaranan.com`)で行う。
-GNOME 48 で動作確認(2026-08-16 導入、extensions.gnome.org 版)。
+GreenPhosphor-CRT デスクトップのタイリングは
+[Tiling Shell](https://github.com/domferr/tilingshell)
+(UUID: `tilingshell@ferrarodomenico.com`)で行う。
+GNOME 48 / v76 で導入(2026-08-17、extensions.gnome.org 版)。
+
+2026-08-16〜17 は Forge を使っていたが、メンテナ不在(リポジトリ・EGO とも
+"Needs a new maintainer" 掲示)・フロートトグル修正(#496/#510)が v89 に
+未収録のまま8ヶ月リリースなし・ローカルパッチ3本が必要、という状態だったため
+乗り換えた。Forge の設定とパッチの記録は末尾のアーカイブ参照
+(拡張・パッチ・設定ファイルはフォールバック用にすべて残置、無効化のみ)。
 
 ## インストール
+
+```sh
+# GNOME 48 対応版(v76)。別バージョンは extension-info API で version_tag を確認:
+# curl -s "https://extensions.gnome.org/extension-info/?uuid=tilingshell%40ferrarodomenico.com"
+curl -sL -o tilingshell.zip "https://extensions.gnome.org/download-extension/tilingshell@ferrarodomenico.com.shell-extension.zip?version_tag=70233"
+gnome-extensions install --force tilingshell.zip
+# Wayland では再ログイン後に有効化される
+gnome-extensions enable tilingshell@ferrarodomenico.com
+```
+
+丸角拡張はスクエア枠と衝突するため無効化のまま(Forge 時代から継続):
+
+```sh
+gnome-extensions disable rounded-window-corners@fxgn
+```
+
+## 適用済み設定(2026-08-17)
+
+Forge と違い、**枠の色・太さも gsettings が実効値**(stylesheet 手術は不要):
+
+```sh
+d=~/.local/share/gnome-shell/extensions/tilingshell@ferrarodomenico.com/schemas
+S() { gsettings --schemadir "$d" set org.gnome.shell.extensions.tilingshell "$@"; }
+# 挙動
+S enable-autotiling true            # 新窓を現在レイアウトの空きタイルへ自動配置
+# 見た目(燐光緑CRT仕様)
+S enable-window-border true
+S window-use-custom-border-color true
+S window-border-color "'#66E07A'"   # フォーカス窓 = 明るい燐光緑
+S window-border-width 3
+S inner-gaps 4                      # Forge の gap 4px を踏襲
+S outer-gaps 0
+# キー割当(i3 風・Forge からの移植)
+S enable-move-keybindings true
+S focus-window-left "['<Super>h']"
+S focus-window-down "['<Super>j']"
+S focus-window-up "['<Super>k']"
+S focus-window-right "['<Super>l']"
+S move-window-left "['<Super>Left', '<Shift><Super>h']"
+S move-window-down "['<Super>Down', '<Shift><Super>j']"
+S move-window-up "['<Super>Up', '<Shift><Super>k']"
+S move-window-right "['<Super>Right', '<Shift><Super>l']"
+S untile-window "['<Super>c']"
+S cycle-layouts "['<Super>g']"
+```
+
+GNOME 標準キーの付け替え(`Super+H` 最小化解除・画面ロック= `Super+Escape`・
+通知= `Super+M` のみ)は Forge 時代のまま維持(アーカイブの表と gsettings
+コマンド参照)。
+
+## チートシート
+
+| 操作 | キー | Forge との差 |
+| --- | --- | --- |
+| フォーカス移動 | `Super + H / J / K / L` | 同じ |
+| ウィンドウをタイルへ移動 | `Shift + Super + H / J / K / L`(`Super + 矢印` も可) | 同じ+矢印 |
+| フロート化(untile) | `Super + C` | **トグルではなく解除のみ**。再タイルは移動キーかドラッグ |
+| レイアウト切替 | `Super + G` | Forge の分割方向トグルの代替 |
+| ドラッグでタイル | ドラッグ中に `Ctrl` を押す | Forge に無かった機能 |
+| スナップアシスト | 窓を画面上端へドラッグ | 同上 |
+| レイアウト編集 | パネルのインジケーターから | — |
+
+Forge に在って Tiling Shell に無いもの:
+
+- タイリング全体の ON/OFF キー(`Super+W` 相当)。必要なら設定
+  `enable-tiling-system` / `enable-autotiling` の切替で代替。
+- スタック/タブ化(`Shift+Super+S/T`)。
+- 手動の縦/横分割(`Super+V/Z`)。レイアウトベースなので分割形状は
+  レイアウト側で決まる(インジケーターのエディタで自作可能)。
+
+## 運用メモ
+
+- **画面ロックは `Super + Escape`**(Forge 時代の付け替えを継続)。
+- フォーカス中の窓 = 燐光緑 `#66E07A` 3px 枠(Tiling Shell 描画)。全窓共通の
+  1px 枠はテーマ側(`decoration` / `window.csd` の box-shadow)が描く。
+- `enable-smart-window-border-radius` は既定 true のまま: 窓の実際の角丸に
+  枠が追従する。テーマがスクエアなので実質スクエア枠になる。
+
+## ロールバック(Forge へ戻す)
+
+```sh
+gnome-extensions disable tilingshell@ferrarodomenico.com
+gnome-extensions enable forge@jmmaranan.com   # 再ログインで反映
+```
+
+Forge 本体(ローカルパッチ1〜3適用済み window.js)・stylesheet・windows.json は
+すべて残置してある。
+
+---
+
+# アーカイブ: Forge セットアップ(2026-08-16〜17)
+
+当時のタイリングは [Forge](https://github.com/forge-ext/forge)
+(i3 風の自動タイリング拡張、UUID: `forge@jmmaranan.com`)で行っていた。
+GNOME 48 で動作確認(2026-08-16 導入、extensions.gnome.org 版)。
+
+### インストール
 
 ```sh
 curl -sL -o forge.zip "https://extensions.gnome.org/download-extension/forge@jmmaranan.com.shell-extension.zip?version_tag=67175"
@@ -19,7 +123,7 @@ gnome-extensions enable forge@jmmaranan.com
 gnome-extensions disable rounded-window-corners@fxgn
 ```
 
-## テーマ適合の設定(燐光緑CRT仕様)
+### テーマ適合の設定(燐光緑CRT仕様)
 
 **枠の色・太さ・角丸は gsettings ではなく Forge のユーザースタイルシートが実効値**
 (v89 で確認。gsettings の focus-border-color 等は描画に反映されない):
@@ -53,15 +157,15 @@ d=~/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas
 gsettings --schemadir $d set org.gnome.shell.extensions.forge window-gap-hidden-on-single true
 ```
 
-## GNOME 標準キーとの衝突解消(適用済み)
+### GNOME 標準キーとの衝突解消(適用済み・**Tiling Shell 移行後も維持**)
 
 Forge の既定キー(i3 風 Super+hjkl)と衝突する GNOME 標準キーを付け替えた:
 
 | キー | 旧割当(GNOME) | 新割当 |
 | --- | --- | --- |
-| `Super+H` | ウィンドウ最小化 | **解除**(Forge: 左へフォーカス) |
-| `Super+L` | **画面ロック** | ロックは **`Super+Escape`** へ移動(Forge: 右へフォーカス) |
-| `Super+V` | 通知トレイ | 通知は `Super+M` のみに(Forge: 縦分割) |
+| `Super+H` | ウィンドウ最小化 | **解除**(タイリング: 左へフォーカス) |
+| `Super+L` | **画面ロック** | ロックは **`Super+Escape`** へ移動(タイリング: 右へフォーカス) |
+| `Super+V` | 通知トレイ | 通知は `Super+M` のみに |
 
 ```sh
 gsettings set org.gnome.desktop.wm.keybindings minimize "[]"
@@ -71,7 +175,7 @@ gsettings set org.gnome.shell.keybindings toggle-message-tray "['<Super>m']"
 
 巻き戻しは各キーを `gsettings reset` するだけ。
 
-## ローカルパッチ: フォーカス移動時の再レンダリングブレ対策(2026-08-16)
+### ローカルパッチ: フォーカス移動時の再レンダリングブレ対策(2026-08-16)
 
 Forge v89 はフォーカスが変わるたびに `renderTree("focus", true)` で全タイル窓へ
 無条件に unmaximize + move_resize_frame を発行するため、端末(VTE)等が同サイズでも
@@ -85,7 +189,7 @@ Forge v89 はフォーカスが変わるたびに `renderTree("focus", true)` �
 - **Forge を更新/再インストールするとパッチは消える** → 同じガードを再適用する。
   upstream への PR 候補でもある(no-op move の抑止)。
 
-## ローカルパッチ2: Super+C フロートトグルの非対称バグ修正(2026-08-17)
+### ローカルパッチ2: Super+C フロートトグルの非対称バグ修正(2026-08-17)
 
 Forge v89 の `Super+C`(FloatToggle)は windows.json の overrides に
 「wmClass + wmId(窓個体)」の float 項目を書き/消しするが、実装が非対称で
@@ -121,7 +225,7 @@ Forge v89 の `Super+C`(FloatToggle)は windows.json の overrides に
   リサイズ不可)は仕様上 `Super+C` でタイルに固定できない(`processFloats()` が
   毎回フロートに戻す)。これはパッチ対象外。
 
-## ローカルパッチ3: Super+C の float が再描画側に届かないバグ修正(2026-08-17)
+### ローカルパッチ3: Super+C の float が再描画側に届かないバグ修正(2026-08-17)
 
 パッチ2適用・再ログイン後も「タイリング ON 中は `Super+C` でフロートせず、
 `Super+W` でタイリングを切ると効くように見える」症状が残った。原因はパッチ2とは
@@ -145,12 +249,14 @@ Forge v89 の `Super+C`(FloatToggle)は windows.json の overrides に
 `Super+C` のトグルがセッション中に実効する。
 
 - パッチ1・2と同じ注意: **再ログインまで反映されず、Forge 更新で消える**。
-  upstream PR 候補。
+- upstream では #492 で同型の原因が特定され、PR #496(v89 タグの2日後にマージ)+
+  #510 で main は修正済み。ただし以後リリースが無く、EGO 配布の v89 には未収録。
+  よって**パッチ3の upstream PR は不要**(パッチ1・2は main に無いので候補のまま)。
 - 既知の小さな制限: Forge 設定画面で overrides を編集すると reload trigger で
   メモリが作り直され、そのセッション中の `Super+C` フロートは解除される
   (もう一度 `Super+C` すればよい)。
 
-## チートシート(Forge 既定キー)
+### チートシート(Forge 既定キー)
 
 | 操作 | キー |
 | --- | --- |
@@ -168,7 +274,7 @@ Forge v89 の `Super+C`(FloatToggle)は windows.json の overrides に
 | フォーカス枠の表示切替 | `Super + X` |
 | Forge 設定を開く | `Super + .` |
 
-## 運用メモ
+### 運用メモ(Forge 当時)
 
 - フォーカス中の窓 = 明るい燐光緑 3px スクエア枠(窓の外側に描画・Forge)。全窓共通の 1px 枠はテーマ側
   (`decoration` / `window.csd` の box-shadow)が描く。
@@ -182,4 +288,3 @@ Forge v89 の `Super+C`(FloatToggle)は windows.json の overrides に
   `gsettings --schemadir ~/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas \
   set org.gnome.shell.extensions.forge window-overrides-reload-trigger <現在値+1>`
   で再読込(Forge 再起動不要)。
-- **画面ロックは `Super + Escape`**(移動済み。忘れやすいので注意)。
