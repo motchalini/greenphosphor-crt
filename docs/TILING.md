@@ -121,6 +121,35 @@ Forge v89 の `Super+C`(FloatToggle)は windows.json の overrides に
   リサイズ不可)は仕様上 `Super+C` でタイルに固定できない(`processFloats()` が
   毎回フロートに戻す)。これはパッチ対象外。
 
+## ローカルパッチ3: Super+C の float が再描画側に届かないバグ修正(2026-08-17)
+
+パッチ2適用・再ログイン後も「タイリング ON 中は `Super+C` でフロートせず、
+`Super+W` でタイリングを切ると効くように見える」症状が残った。原因はパッチ2とは
+別の構造バグ(素の v89 を EGO から取得して diff し、upstream 由来を確認済み):
+
+- `addFloatOverride()` / `removeFloatOverride()` は **ファイル**(windows.json)
+  にしか書かない。
+- 一方、再描画の `processFloats()` → `isFloatingExempt()` が参照するのは起動時に
+  読み込んだ**メモリ内コピー `this.windowProps`** で、しかも読み込み時に
+  **wmId 付き項目を全部捨てる**(`reloadWindowOverrides()`。過去セッションの
+  wmId 誤マッチ対策で、これ自体は妥当)。
+- そのため `Super+C` は書き込みに成功していても、自分自身の
+  `renderTree("float-toggle")` → `processFloats()` で即タイルに巻き戻される。
+  `Super+W` OFF 時に「効く」ように見えるのは、renderTree が早期 return して
+  巻き戻し役の processFloats が走らなくなるだけ(タイリング OFF 中は全窓
+  フロートなので当然でもある)。
+
+修正: `addFloatOverride()` / `removeFloatOverride()` がファイル保存と同時に
+`this.windowProps.overrides` へも同じスコープ規則で追加/削除するようにした
+(読み込み時に古い wmId を捨てる upstream の仕様はそのまま)。これで
+`Super+C` のトグルがセッション中に実効する。
+
+- パッチ1・2と同じ注意: **再ログインまで反映されず、Forge 更新で消える**。
+  upstream PR 候補。
+- 既知の小さな制限: Forge 設定画面で overrides を編集すると reload trigger で
+  メモリが作り直され、そのセッション中の `Super+C` フロートは解除される
+  (もう一度 `Super+C` すればよい)。
+
 ## チートシート(Forge 既定キー)
 
 | 操作 | キー |
@@ -147,7 +176,7 @@ Forge v89 の `Super+C`(FloatToggle)は windows.json の overrides に
   `Shift + Super + C` で常時フロートに落とす。
 - **注意: `Shift + Super + C` は `~/.config/forge/config/windows.json` の
   overrides に永続登録される**。誤って押すとそのアプリは以後ずっとフロートになる
-  (2026-08-16 に tilix で発生)。**ローカルパッチ2適用後は `Super + C` で解除できる**。
+  (2026-08-16 に tilix で発生)。**ローカルパッチ2・3適用後は `Super + C` で解除できる**。
   パッチ未反映(再ログイン前)や手動で戻す場合は、windows.json から該当 wmClass の
   項目を削除し、
   `gsettings --schemadir ~/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas \
