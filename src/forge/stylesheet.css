@@ -1,0 +1,192 @@
+/* GreenPhosphor-CRT custom Forge stylesheet (square borders, phosphor green).
+ * Master copy lives in the greenphosphor-crt repo (src/forge/stylesheet.css).
+ * The extension overwrites this file when its css version bumps
+ * (css-last-update) — restore from the repo copy if colors turn salmon/rounded. */
+
+.tiled {
+  color: rgba(51, 184, 74, 1);
+  opacity: 1;
+  border-width: 3px;
+}
+
+.split {
+  color: rgba(102, 224, 122, 0.55);
+  opacity: 1;
+  border-width: 3px;
+}
+
+.stacked {
+  color: rgba(255, 176, 0, 1);
+  opacity: 1;
+  border-width: 3px;
+}
+
+.tabbed {
+  color: rgba(129, 201, 149, 1);
+  opacity: 1;
+  border-width: 3px;
+}
+
+.floated {
+  color: rgba(102, 187, 106, 0.7);
+  border-width: 3px;
+  opacity: 1;
+}
+
+.window-tiled-border {
+  border-width: 3px;
+  border-color: rgba(102, 224, 122, 1);
+  border-style: solid;
+  border-radius: 0;
+}
+
+.window-split-border {
+  border-width: 3px;
+  border-color: rgba(102, 224, 122, 0.55);
+  border-style: solid;
+  border-radius: 0;
+}
+
+/* forge-36le (fork): St does not paint an asymmetric (single-side) border when
+ * a border-radius is set — keep the explicit 0 on the one-edge variants. */
+.window-split-horizontal {
+  border-left-width: 0;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  border-radius: 0;
+}
+
+.window-split-vertical {
+  border-left-width: 0;
+  border-top-width: 0;
+  border-right-width: 0;
+  border-radius: 0;
+}
+
+.window-stacked-border {
+  border-width: 3px;
+  border-color: rgba(255, 176, 0, 1);
+  border-style: solid;
+  border-radius: 0;
+}
+
+.window-tabbed-border {
+  border-width: 3px;
+  border-color: rgba(129, 201, 149, 1);
+  border-style: solid;
+  border-radius: 0;
+}
+
+.window-tabbed-bg {
+  border-radius: 0;
+}
+
+.window-tabbed-tab {
+  background-color: rgba(8, 11, 8, 1);
+  border-color: rgba(51, 184, 74, 0.6);
+  border-width: 1px;
+  border-radius: 0;
+  color: #66BB6A;
+  margin: 1px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.window-tabbed-tab-active {
+  background-color: rgba(51, 184, 74, 1);
+  color: black;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.window-tabbed-tab-close {
+  padding: 3px;
+  margin: 4px;
+  border-radius: 0;
+  width: 16px;
+  background-color: #FFB000;
+}
+
+.window-tabbed-tab-icon {
+  margin: 3px;
+}
+
+.window-floated-border {
+  border-width: 3px;
+  border-color: rgba(102, 187, 106, 0.8);
+  border-style: solid;
+  border-radius: 0;
+}
+
+.window-tilepreview-tiled {
+  border-width: 1px;
+  border-color: rgba(51, 184, 74, 0.4);
+  border-style: solid;
+  border-radius: 0;
+  background-color: rgba(51, 184, 74, 0.3);
+}
+
+.window-tilepreview-stacked {
+  border-width: 1px;
+  border-color: rgba(255, 176, 0, 0.4);
+  border-style: solid;
+  border-radius: 0;
+  background-color: rgba(255, 176, 0, 0.3);
+}
+
+.window-tilepreview-swap {
+  border-width: 1px;
+  border-color: rgba(129, 201, 149, 0.4);
+  border-style: solid;
+  border-radius: 0;
+  background-color: rgba(129, 201, 149, 0.4);
+}
+
+.window-tilepreview-tabbed {
+  border-width: 1px;
+  border-color: rgba(129, 201, 149, 0.4);
+  border-style: solid;
+  border-radius: 0;
+  background-color: rgba(129, 201, 149, 0.3);
+}
+
+/* Keybindings cheatsheet overlay (fork feature) — CRT green-black */
+.forge-cheatsheet {
+  background-color: #0A0F0A;
+  border-radius: 0;
+  padding: 24px 32px;
+  border: 1px solid #33B84A;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.forge-cheatsheet-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #66E07A;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.forge-cheatsheet-category {
+  font-size: 13px;
+  font-weight: bold;
+  color: #FFB000;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.forge-cheatsheet-row {
+  font-size: 12px;
+  color: #81C995;
+  margin: 4px 0;
+  padding: 2px 0;
+}
+
+.forge-cheatsheet-key {
+  font-family: monospace;
+  font-weight: bold;
+  color: #FFB000;
+  min-width: 180px;
+}
+
+.forge-cheatsheet-desc {
+  color: #66BB6A;
+}
