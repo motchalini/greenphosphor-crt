@@ -104,6 +104,8 @@ gsettings set org.gnome.shell.keybindings toggle-message-tray "['<Super>m']"
 | フロート切替(一時/常時) | `Super + C` / `Shift + Super + C` |
 | タイリング全体の ON/OFF | `Super + W` |
 | このワークスペースだけタイル切替 | `Shift + Super + W` |
+| リサイズ(辺を広げる: 左/下/上/右) | `Ctrl + Super + Y / U / I / O` |
+| リサイズ(辺を縮める) | 上記に `Shift` を追加 |
 | ギャップ増減 | `Ctrl + Super + +` / `Ctrl + Super + -` |
 | フォーカス枠の表示切替 | `Super + X` |
 | Forge 設定を開く | `Super + .` |
