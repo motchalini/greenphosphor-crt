@@ -110,6 +110,50 @@ gsettings set org.gnome.shell.keybindings toggle-message-tray "['<Super>m']"
 | フォーカス枠の表示切替 | `Super + X` |
 | Forge 設定を開く | `Super + .` |
 
+## ローカルパッチ: 新規ウィンドウは「最後」を分割(2026-08-21)
+
+新しいウィンドウが「アクティブ(フォーカス中)の窓」ではなく「レイアウト末尾の窓」を
+分割して開くようにするローカルパッチ。gsettings キー `new-window-attach`
+(`focused`=フォーク既定 / `last`)を新設し、**この環境では `last` に設定済み**。
+`focused` に戻せばパッチ前と同じコード経路を通る(既定値では不活性)。
+Forge 設定画面(`Super + .`)にも「New window attaches to」のドロップダウンが出る。
+
+- パッチ本体: **`src/forge/patches/new-window-attach-last.patch`**(対象は
+  `lib/extension/window.js` / `lib/prefs/settings.js` /
+  `schemas/org.gnome.shell.extensions.forge.gschema.xml` の3ファイル)
+- 実装の要点: 取り付け先解決の一点集約 `_resolveAttachTarget()` の先頭で、
+  monitor+workspace コンテナ配下の**文書順で最後**の窓をアンカーとして返す
+  (`getNodeByType` は幅優先走査で入れ子時に末尾がズレるため使えず、深さ優先の
+  `_lastAttachAnchor()` を追加)。アンカー候補は「レイアウトに入る(予定の)窓」=
+  恒久フロート例外でなく最小化でもない窓(生まれたての窓は一瞬 FLOAT なので
+  `isTile()` ではなく `isFloatingExempt()` で判定。候補ゼロなら全生存窓に
+  フォールバック)。auto-split(quarter tiling)有効時はフォーカス窓ではなく
+  アンカー窓をそのアスペクト比で `tree.split()` してから取り付ける
+  (Split コマンドと同じ意味論。stacked/tabbed コンテナ内では分割せず末尾に合流)。
+- 防御: キー読み取りは `settings_schema.has_key()` ガード付き(js だけパッチ済みで
+  schema 未コンパイルでも abort せず `focused` 扱いに落ち、prefs の行も非表示に
+  なるだけ)。2026-08-21 に独立レビュー済み(重大指摘なし・中3件は修正済み)。
+- 切替(パッチ適用済みなら再ログイン不要・即時反映):
+
+  ```sh
+  d=~/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas
+  gsettings --schemadir $d set org.gnome.shell.extensions.forge new-window-attach focused  # 戻す
+  ```
+
+- 適用/復元(**フォーク更新で消えるので更新後は再適用**。gsettings 値は dconf に
+  残るので設定し直しは不要):
+
+  ```sh
+  cd ~/.local/share/gnome-shell/extensions/forge@jmmaranan.com
+  patch -p1 < <repo>/src/forge/patches/new-window-attach-last.patch
+  glib-compile-schemas schemas/
+  # コード反映は再ログイン(ES モジュールキャッシュのため disable/enable では不可)
+  ```
+
+- 注意: フォーカス窓の淡緑「分割ヒント」は従来どおり**手動分割(`Super+V/Z/G`)の
+  向き**を示す。`last` モードでは新規窓の出現位置(レイアウト末尾)とは無関係に
+  なるので、紛らわしければ `split-border-toggle` を false に。
+
 ## 運用メモ
 
 - **画面ロックは `Super + Escape`**(忘れやすいので注意)。
@@ -123,8 +167,9 @@ gsettings set org.gnome.shell.keybindings toggle-message-tray "['<Super>m']"
   登録。フォークでは `Super + C` で個体解除できる)。
 - フォークは古い wmId 項目を起動時に自動掃除してファイルにも反映する
   (2026-08-17 に実際に4件掃除されたのを確認)。
-- 更新はフォークの Releases を見て同じ手順で入れ直す(ローカルパッチ運用は不要に
-  なったので、更新で消えるものは無い)。
+- 更新はフォークの Releases を見て同じ手順で入れ直す。**2026-08-21 から
+  ローカルパッチ1本が復活**(新規窓の取り付け先。上のセクション参照)しているので、
+  更新後はパッチ再適用+`glib-compile-schemas`+再ログインを忘れない。
 
 ## バックアップとロールバック
 

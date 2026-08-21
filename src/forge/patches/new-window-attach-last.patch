@@ -1,0 +1,172 @@
+diff -ruN a/lib/extension/window.js b/lib/extension/window.js
+--- a/lib/extension/window.js	2026-08-21 22:02:11.638831394 +0900
++++ b/lib/extension/window.js	2026-08-21 22:17:19.377604808 +0900
+@@ -1788,7 +1788,11 @@
+         // and before it attaches — never for popups/tooltips (fail _validWindow) or
+         // reload re-tracks (existNodeWindow truthy), which would otherwise wrap the
+         // focused window in a phantom single-child CON.
+-        if (settings.get_boolean("auto-split-enabled") && this.focusMetaWindow) {
++        // forge-lstw: in 'last' attach mode the split anchor is the layout's last
++        // window, not the focused one; _resolveAttachTarget reproduces this same
++        // auto-split against that anchor once the target container is known.
++        const attachToLast = this.newWindowAttachMode === "last";
++        if (!attachToLast && settings.get_boolean("auto-split-enabled") && this.focusMetaWindow) {
+           let currentFocusNode = this.tree.findNode(this.focusMetaWindow);
+           if (currentFocusNode) {
+             let layout = currentFocusNode.parentNode.layout;
+@@ -1827,6 +1831,8 @@
+         let windowNodes = metaMonWsNode.getNodeByType(NODE_TYPES.WINDOW);
+         let hasWindows = windowNodes.length > 0;
+ 
++        // forge-lstw: a 'last'-mode auto-split inside _resolveAttachTarget can
++        // restructure the tree — windowNodes/hasWindows are stale past this call.
+         const attachTarget = this._resolveAttachTarget(metaMonWsNode, windowNodes, hasWindows);
+ 
+         let nodeWindow = this.tree.createNode(
+@@ -1887,6 +1893,9 @@
+   /**
+    * Resolve the node a brand-new window should attach under, within the active
+    * monitor/workspace container (metaMonWsNode). Precedence:
++   *   0. forge-lstw: with new-window-attach='last', the document-order last
++   *      window of this container — focus plays no part, and auto-split
++   *      (quarter tiling) is applied against that anchor instead;
+    *   1. the tree's current attachNode, if it still resolves;
+    *   2. Feature #227 fallback: the last focused window, when it lives under this
+    *      monitor/workspace;
+@@ -1896,6 +1905,37 @@
+    * here so the new window lands beside its visible neighbors.
+    */
+   _resolveAttachTarget(metaMonWsNode, windowNodes, hasWindows) {
++    // forge-lstw: 'last' mode — a new window goes to the end of this layout, not
++    // beside the focused window. createNode inserts right after a WINDOW target,
++    // so the document-order last window IS the end of its container. Quarter
++    // tiling keeps its meaning by splitting the anchor by its own aspect ratio
++    // (same contract as the Split command, forge-clsp: only a container
++    // tree.split() actually created is stamped and used as the target — a no-op
++    // split, e.g. the single-child layout toggle, falls back to the anchor).
++    const settings = this.ext.settings;
++    if (hasWindows && this.newWindowAttachMode === "last") {
++      const anchor = this._lastAttachAnchor(metaMonWsNode);
++      if (anchor) {
++        const anchorLayout = anchor.parentNode.layout;
++        if (
++          settings.get_boolean("auto-split-enabled") &&
++          (anchorLayout === LAYOUT_TYPES.HSPLIT || anchorLayout === LAYOUT_TYPES.VSPLIT)
++        ) {
++          const frameRect = anchor.nodeValue.get_frame_rect();
++          const orientation =
++            frameRect.width > frameRect.height
++              ? ORIENTATION_TYPES.HORIZONTAL
++              : ORIENTATION_TYPES.VERTICAL;
++          const newContainer = this.tree.split(anchor, orientation);
++          if (newContainer) {
++            this.applyDefaultLayoutToContainer(newContainer);
++            return newContainer;
++          }
++        }
++        return anchor;
++      }
++    }
++
+     let attachTarget = this.tree.attachNode;
+     attachTarget = attachTarget ? this.tree.findNode(attachTarget.nodeValue) : null;
+ 
+@@ -1913,6 +1953,52 @@
+   }
+ 
+   /**
++   * forge-lstw: the last window in document order under this monitor/workspace —
++   * the visual end of the layout. getNodeByType is unusable for this: it walks
++   * breadth-first, so with nested CONs its last element is the deepest level's
++   * last window, not the layout's end. The anchor pool holds windows that are
++   * (or are about to be) part of the layout; when none qualify, any live
++   * window wins so the container fallback stays a last resort.
++   * @param {import("./tree.js").Node} metaMonWsNode
++   * @returns {import("./tree.js").Node|null} anchor window node, null when empty
++   */
++  _lastAttachAnchor(metaMonWsNode) {
++    const windows = [];
++    metaMonWsNode._walk((node) => {
++      if (node.isWindow() && Utils.isWindowAlive(node.nodeValue)) windows.push(node);
++    }, metaMonWsNode._traverseDepthFirst);
++    // isTile() can't be the predicate here: a window created moments ago is
++    // still FLOAT until processFloats runs (the forge-3hsv trap), so a burst
++    // of new windows would anchor before their predecessor. isFloatingExempt
++    // reads what is knowable now; minimized windows are excluded like every
++    // other "really in the layout" check (getTiledChildren et al.) so a
++    // hidden window's slot is never split out from under it.
++    const anchorable = windows.filter(
++      (w) => !this.isFloatingExempt(w.nodeValue) && !w.nodeValue.minimized
++    );
++    const pool = anchorable.length ? anchorable : windows;
++    return pool.length ? pool[pool.length - 1] : null;
++  }
++
++  /**
++   * forge-lstw: read new-window-attach defensively. The key exists only in this
++   * local patch's schema; if the patched js ever runs against a stale compiled
++   * schema (fork update re-applied without glib-compile-schemas), a bare
++   * get_string() would g_error() — aborting the whole shell on the next
++   * window-created. Probe the schema once and pin 'focused' (the inert
++   * default) when the key is absent.
++   */
++  get newWindowAttachMode() {
++    if (this._newWindowAttachHasKey === undefined) {
++      this._newWindowAttachHasKey =
++        this.ext.settings?.settings_schema?.has_key("new-window-attach") ?? false;
++    }
++    return this._newWindowAttachHasKey
++      ? this.ext.settings.get_string("new-window-attach")
++      : "focused";
++  }
++
++  /**
+    * Bind the per-window and per-actor signals for a newly tracked window, once.
+    * The handlers close over windowActor (border hiding) and `this`; they are
+    * stored on metaWindow.windowSignals / windowActor.actorSignals for disable().
+diff -ruN a/lib/prefs/settings.js b/lib/prefs/settings.js
+--- a/lib/prefs/settings.js	2026-08-21 22:02:11.638831394 +0900
++++ b/lib/prefs/settings.js	2026-08-21 22:17:19.381605001 +0900
+@@ -143,6 +143,24 @@
+             { id: "window-actual", name: _("Window's own monitor") },
+           ],
+         }),
++        // forge-lstw: the key ships with this local patch's schema — binding it
++        // against a stale compiled schema would crash the prefs process, so the
++        // row only appears when the key exists.
++        ...(settings.settings_schema.has_key("new-window-attach")
++          ? [
++              new DropDownRow({
++                title: _("New window attaches to"),
++                subtitle: _("Split the focused window, or append after the layout's last window"),
++                settings,
++                type: "s",
++                bind: "new-window-attach",
++                items: [
++                  { id: "focused", name: _("Focused window (default)") },
++                  { id: "last", name: _("Last window in the layout") },
++                ],
++              }),
++            ]
++          : []),
+         new DropDownRow({
+           title: _("Drag-and-drop behavior"),
+           subtitle: _("What to do when dragging one window on top of another"),
+diff -ruN a/schemas/org.gnome.shell.extensions.forge.gschema.xml b/schemas/org.gnome.shell.extensions.forge.gschema.xml
+--- a/schemas/org.gnome.shell.extensions.forge.gschema.xml	2026-08-21 22:02:11.638831394 +0900
++++ b/schemas/org.gnome.shell.extensions.forge.gschema.xml	2026-08-21 22:02:11.646831465 +0900
+@@ -181,6 +181,14 @@
+             <default>'pointer'</default>
+             <summary>Initial monitor for a new window: 'pointer' (active/pointer monitor) or 'window-actual' (the window's own monitor)</summary>
+         </key>
++        <key type="s" name="new-window-attach">
++            <choices>
++                <choice value="focused"/>
++                <choice value="last"/>
++            </choices>
++            <default>'focused'</default>
++            <summary>Where a new window attaches: 'focused' (split the focused window) or 'last' (append after the layout's last window)</summary>
++        </key>
+         <key type="b" name="preview-hint-enabled">
+             <default>false</default>
+             <summary>Whether to show preview hint DND</summary>
