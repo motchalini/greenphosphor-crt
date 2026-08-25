@@ -70,7 +70,15 @@ gnome-extensions enable forge@jmmaranan.com
 ```sh
 d=~/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas
 gsettings --schemadir $d set org.gnome.shell.extensions.forge window-gap-hidden-on-single true
+gsettings --schemadir $d set org.gnome.shell.extensions.forge auto-split-enabled true
 ```
+
+- **`auto-split-enabled`(縦横交互の自動分割・有効化済み)**: 新しい窓を開くとき、
+  取り付け先の窓の**アスペクト比**で分割方向を自動決定する(横長→横並び/縦長→縦積み。
+  分割を繰り返すと awesome の dwindle 型のように渦巻き状に刻まれていく)。
+  2026-08-18 有効化、8/25 に常用決定。stacked/tabbed コンテナ内では分割せず末尾に
+  合流。`new-window-attach last`(後述ローカルパッチ)と併用時は「最後の窓」を
+  その窓のアスペクト比で分割する。キー割当は無く、戻すには同じキーを `false` に。
 
 ## GNOME 標準キーとの衝突解消(適用済み)
 
@@ -109,6 +117,11 @@ gsettings set org.gnome.shell.keybindings toggle-message-tray "['<Super>m']"
 | ギャップ増減 | `Ctrl + Super + +` / `Ctrl + Super + -` |
 | フォーカス枠の表示切替 | `Super + X` |
 | Forge 設定を開く | `Super + .` |
+
+※ この環境は **auto-split 有効**のため、新規窓の分割方向は取り付け先窓の
+アスペクト比で自動決定される(横長→横並び/縦長→縦積み)。`Super + V / Z` の
+手動指定は新規窓の出現時に auto-split が向きを再決定するため上書きされることが
+ある(既存窓どうしのレイアウト操作には従来どおり効く)。
 
 ## ローカルパッチ: 新規ウィンドウは「最後」を分割(2026-08-21)
 
@@ -159,8 +172,10 @@ Forge 設定画面(`Super + .`)にも「New window attaches to」のドロップ
 - **画面ロックは `Super + Escape`**(忘れやすいので注意)。
 - フォーカス中の窓 = 明るい燐光緑 3px スクエア枠(窓の外側に描画・Forge)。
   全窓共通の 1px 枠はテーマ側(`decoration` / `window.csd` の box-shadow)が描く。
-- フォーカス窓の**右または下にだけ出る淡緑の線は「分割ヒント」**(次の窓が
-  開く向き。右=横並び/下=縦積み。`Super+G` で切替)。消したい場合は
+- フォーカス窓の**右または下にだけ出る淡緑の線は「分割ヒント」**(手動分割の
+  向き。右=横並び/下=縦積み。`Super+G` で切替)。ただしこの環境は
+  auto-split + `new-window-attach last` のため、**新規窓の実際の出現位置・向きとは
+  一致しない**(向きはアスペクト比・位置はレイアウト末尾で決まる)。紛らわしければ
   gsettings の `split-border-toggle` を false に。
 - ダイアログ等は Forge が自動でフロート扱いにする。挙動がおかしいアプリは
   `Shift + Super + C` で常時フロートに落とす(windows.json にクラス単位で永続
