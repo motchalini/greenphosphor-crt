@@ -33,29 +33,139 @@
 @define-color placeholder_text_color rgba(140, 180, 148, 0.55);
 
 /* ---- window ground --------------------------------------------------- */
+/* Translucent ground: window chrome lets the desktop glow through; content
+   surfaces (.view, list, entry, sidebar) stay opaque for readability. */
 .background {
-  background-color: #0C120D;
+  background-color: rgba(12, 18, 13, 0.85);
   color: #D8E8DA;
+}
+
+/* ---- retro window frame: square corners, hard 1px phosphor edge ------- */
+decoration {
+  border-radius: 0;
+  box-shadow: 0 0 0 1px #2E8C3C, 0 4px 14px 2px rgba(0, 0, 0, 0.55);
+}
+/* backdrop keeps identical shadow extents — differing extents resize the
+   CSD surface on every focus change (visible width-jitter in tiled VTE) */
+decoration:backdrop {
+  box-shadow: 0 0 0 1px rgba(74, 214, 100, 0.30), 0 4px 14px 2px rgba(0, 0, 0, 0.40);
+}
+window.csd,
+window.csd > .titlebar { border-radius: 0; }
+/* the vendored base re-rounds several window types with selectors more
+   specific than the plain `decoration` reset above — square them all here.
+   Radius only: ring colors / shadows stay whatever the base gives them.
+   - window…unified: libhandy apps (Evince 46+ etc.), 12px in base
+   - terminal-window: gnome-terminal toplevel, 14px top in base
+   - .csd.popup decoration: menu/popover surfaces, 14px in base
+   - tooltip.csd / .ssd decoration: 12px in base */
+window.background.csd.unified,
+window.background.csd.unified > decoration,
+window.background.csd.unified > decoration-overlay,
+terminal-window decoration,
+.csd.popup decoration,
+tooltip.csd decoration,
+.ssd decoration {
+  border-radius: 0;
 }
 
 /* ---- headerbar / titlebar: CRT chrome -------------------------------- */
 headerbar,
 .titlebar {
-  background-color: #080B08;
+  background-color: rgba(8, 11, 8, 0.72);
   background-image: none;
   color: #33B84A;
+  border-radius: 0;
+  min-height: 36px;
 }
 headerbar:backdrop,
 .titlebar:backdrop {
-  background-color: #0A0D0A;
+  background-color: rgba(10, 13, 10, 0.80);
   color: rgba(51, 184, 74, 0.55);
 }
-headerbar .title { color: #33B84A; }
-headerbar .subtitle { color: rgba(51, 184, 74, 0.70); }
+headerbar .title,
+.titlebar .title {
+  color: #33B84A;
+  font-family: "Cica", monospace;
+}
+headerbar .subtitle,
+.titlebar .subtitle {
+  color: rgba(51, 184, 74, 0.70);
+  font-family: "Cica", monospace;
+}
+
+/* ---- window buttons: square bordered boxes ---------------------------- */
+button.titlebutton {
+  border-radius: 0;
+  border: 1px solid rgba(74, 214, 100, 0.35);
+  background-image: none;
+  background-color: transparent;
+  box-shadow: none;
+  -gtk-icon-shadow: none;
+  padding: 1px;
+  min-width: 20px;
+  min-height: 20px;
+  margin: 0 2px;
+  color: rgba(255, 255, 255, 0.7); /* white X (restated at winning specificity below) */
+}
+button.titlebutton:hover {
+  background-color: #28A038;
+  border-color: #28A038;
+  color: #071008;
+}
+button.titlebutton:active {
+  background-color: #33B84A;
+  border-color: #33B84A;
+  color: #071008;
+}
+button.titlebutton:backdrop {
+  border-color: rgba(74, 214, 100, 0.18);
+  color: rgba(255, 255, 255, 0.4);
+}
+/* base re-rounds/re-sizes/re-colors these at higher specificity
+   (`button.titlebutton:not(.suggested-action):not(.destructive-action)` →
+   9999px, min 24px; `headerbar button:not(…)` → color white 0.7) — restate
+   at matching specificity, same trick as the decoration sweep */
+button.titlebutton:not(.suggested-action):not(.destructive-action) {
+  border-radius: 0;
+  min-width: 20px;
+  min-height: 20px;
+  padding: 1px;
+  margin: 0 2px;
+  color: rgba(255, 255, 255, 0.7);
+}
+button.titlebutton:not(.suggested-action):not(.destructive-action):backdrop {
+  color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(74, 214, 100, 0.18);
+}
+button.titlebutton:not(.suggested-action):not(.destructive-action).close:hover {
+  background-color: #28A038;
+  border-color: #28A038;
+  color: #071008;
+}
+button.titlebutton:not(.suggested-action):not(.destructive-action).close:active {
+  background-color: #33B84A;
+  border-color: #33B84A;
+  color: #071008;
+}
+
+/* slim titlebar for server-side decorated (mostly X11) windows */
+headerbar.default-decoration {
+  min-height: 28px;
+  padding: 0 4px;
+}
+headerbar.default-decoration button.titlebutton,
+.titlebar.default-decoration button.titlebutton {
+  min-width: 18px;
+  min-height: 18px;
+  padding: 0;
+}
 
 /* ---- menus & popovers ------------------------------------------------- */
 menu, .menu, .context-menu {
   background-color: #0B140D;
+  border-radius: 0;
+  border: 1px solid rgba(74, 214, 100, 0.25);
 }
 menu menuitem:hover,
 .menu menuitem:hover,
@@ -64,11 +174,13 @@ menu menuitem:hover,
   color: #071008;
 }
 menubar, .menubar {
-  background-color: #080B08;
+  background-color: rgba(8, 11, 8, 0.72);
   color: #33B84A;
 }
 popover.background {
   background-color: #0B140D;
+  border-radius: 0;
+  border: 1px solid rgba(74, 214, 100, 0.25);
 }
 
 /* ---- sidebars --------------------------------------------------------- */
@@ -117,10 +229,16 @@ selection {
 toolbar, .toolbar,
 searchbar > revealer > box,
 actionbar > revealer > box {
-  background-color: #0A0F0B;
+  background-color: rgba(10, 15, 11, 0.72);
 }
 notebook > header { background-color: #0A0F0B; }
 notebook > header tab:checked { color: #33B84A; }
+/* Base paints the notebook body #2C2C2C — opaque AND off-palette grey. It
+   backs Tilix's whole session area, so it alone kept the titlebar strip
+   solid no matter what the layers above did (the terminal only punches
+   through because vte replaces pixels instead of blending). Pages that
+   need ink carry their own opaque .view/list surfaces, so drop it. */
+notebook, notebook.frame { background-color: transparent; }
 
 /* ---- controls ---------------------------------------------------------- */
 button.suggested-action {
@@ -154,6 +272,18 @@ tooltip.background {
   background-color: rgba(8, 11, 8, 0.95);
   color: #33B84A;
   border: 1px solid rgba(74, 214, 100, 0.25);
+  border-radius: 0;
 }
 separator { background-color: rgba(74, 214, 100, 0.10); }
 frame > border { border-color: rgba(74, 214, 100, 0.14); }
+
+/* ---- tilix -------------------------------------------------------------- */
+/* NOTE: the title strip / notebook ground is painted by tilix's OWN css at
+   APPLICATION priority (.tilix-background: @theme_bg_color, over a window it
+   makes transparent) — theme css can never win there. The translucent ground
+   lives in gtk-3.0-user.css → deploy to ~/.config/gtk-3.0/gtk.css (USER
+   priority). Below only fixes the base theme's grey session sidebar. */
+.terminix-session-sidebar,
+.tilix-session-sidebar {
+  background-image: image(#0A0F0B);
+}
