@@ -1,0 +1,26 @@
+/* ===================================================================== *
+ * GreenPhosphor-CRT — GTK3 USER-priority css.
+ * Deploy: cp src/overrides/gtk-3.0-user.css ~/.config/gtk-3.0/gtk.css
+ * (build.sh does not touch this file; apps read it once at startup,
+ *  so a full app restart — or logout — is needed after changes.)
+ *
+ * Only rules that must beat APPLICATION-priority css belong here;
+ * everything else goes through the theme overrides.
+ * ===================================================================== */
+
+/* Tilix: in transparency mode its window is transparent and its own css
+   repaints .tilix-background/.tilix-notebook-page with opaque
+   @theme_bg_color (#0C120D) at app priority — that is the "solid" strip
+   above the terminal. Repaint the ground like the headerbar instead. */
+.tilix-background {
+  background-color: rgba(8, 11, 8, 0.72);
+}
+/* Tilix nests the class (session notebook > session > inner stack boxes —
+   appwindow.d/session.d), so painting every layer at 0.72 composites to
+   ~0.92-0.98 = a still-solid titlebar strip. Only the outermost may paint. */
+.tilix-background .tilix-background {
+  background-color: transparent;
+}
+.tilix-notebook-page {
+  background-color: transparent;
+}

@@ -8595,14 +8595,15 @@ FIXME this is really an API */
 @define-color accent_bg_color #28A038;
 @define-color accent_fg_color #071008;
 @define-color accent_color #3DBF52;
-@define-color window_bg_color #0C120D;
+/* translucent window/headerbar grounds (content views stay opaque) */
+@define-color window_bg_color rgba(12, 18, 13, 0.85);
 @define-color window_fg_color #D8E8DA;
 @define-color view_bg_color #080B08;
 @define-color view_fg_color #D8E8DA;
-@define-color headerbar_bg_color #080B08;
+@define-color headerbar_bg_color rgba(8, 11, 8, 0.72);
 @define-color headerbar_fg_color #33B84A;
 @define-color headerbar_border_color rgba(74, 214, 100, 0.16);
-@define-color headerbar_backdrop_color #0A0D0A;
+@define-color headerbar_backdrop_color rgba(10, 13, 10, 0.80);
 @define-color headerbar_shade_color rgba(0, 0, 0, 0.36);
 @define-color card_bg_color #0B140D;
 @define-color card_fg_color #D8E8DA;
@@ -8629,14 +8630,14 @@ FIXME this is really an API */
   --accent-bg-color: #28A038;
   --accent-fg-color: #071008;
   --accent-color: #3DBF52;
-  --window-bg-color: #0C120D;
+  --window-bg-color: rgba(12, 18, 13, 0.85);
   --window-fg-color: #D8E8DA;
   --view-bg-color: #080B08;
   --view-fg-color: #D8E8DA;
-  --headerbar-bg-color: #080B08;
+  --headerbar-bg-color: rgba(8, 11, 8, 0.72);
   --headerbar-fg-color: #33B84A;
   --headerbar-border-color: rgba(74, 214, 100, 0.16);
-  --headerbar-backdrop-color: #0A0D0A;
+  --headerbar-backdrop-color: rgba(10, 13, 10, 0.80);
   --card-bg-color: #0B140D;
   --card-fg-color: #D8E8DA;
   --dialog-bg-color: #0B140D;
@@ -8653,22 +8654,97 @@ FIXME this is really an API */
   --thumbnail-fg-color: #D8E8DA;
 }
 
+/* ---- retro window frame: square corners, hard 1px phosphor edge -------- */
+window.csd {
+  border-radius: 0;
+  box-shadow: 0 0 0 1px #2E8C3C, 0 4px 14px 2px rgba(0, 0, 0, 0.55);
+}
+/* backdrop keeps identical shadow extents — differing extents resize the
+   CSD surface on every focus change (visible width-jitter in tiled VTE) */
+window.csd:backdrop {
+  box-shadow: 0 0 0 1px rgba(74, 214, 100, 0.30), 0 4px 14px 2px rgba(0, 0, 0, 0.40);
+}
+
+/* ---- window buttons: square bordered boxes ------------------------------ */
+windowcontrols > button {
+  border-radius: 0;
+  margin: 0 2px;
+}
+windowcontrols > button > image {
+  border-radius: 0;
+  border: 1px solid rgba(74, 214, 100, 0.35);
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  padding: 2px;
+  color: rgba(255, 255, 255, 0.7); /* white X, same as the GTK3 titlebuttons */
+}
+windowcontrols > button:hover > image {
+  background-color: #28A038;
+  border-color: #28A038;
+  color: #071008;
+}
+windowcontrols > button:active > image {
+  background-color: #33B84A;
+  border-color: #33B84A;
+  color: #071008;
+}
+windowcontrols > button:backdrop > image {
+  border-color: rgba(74, 214, 100, 0.18);
+  color: rgba(255, 255, 255, 0.4);
+}
+/* base re-rounds these at higher specificity
+   (`windowcontrols > button:not(.suggested-action):not(.destructive-action)`
+   and `button.close` → 9999px + filled circle) — restate at matching
+   specificity, same trick as the decoration sweep */
+windowcontrols > button:not(.suggested-action):not(.destructive-action) {
+  border-radius: 0;
+  background: none;
+  margin: 0 2px;
+}
+windowcontrols > button:not(.suggested-action):not(.destructive-action).close:hover,
+windowcontrols > button:not(.suggested-action):not(.destructive-action).close:active {
+  background: none; /* the fill lives on the inner image box */
+}
+/* …and base `… image { background: none }` (0,2,3) also beats the plain
+   `button:hover > image` fill (0,1,3) — restate the fill above it */
+windowcontrols > button:not(.suggested-action):not(.destructive-action):hover > image {
+  background-color: #28A038;
+}
+windowcontrols > button:not(.suggested-action):not(.destructive-action):active > image {
+  background-color: #33B84A;
+}
+
 /* ---- widget fixes for plain GTK4 (vendored base hardcodes greys) -------- */
 window.background {
-  background-color: #0C120D;
+  background-color: rgba(12, 18, 13, 0.85);
   color: #D8E8DA;
 }
 headerbar {
-  background-color: #080B08;
+  background-color: rgba(8, 11, 8, 0.72);
   color: #33B84A;
+  border-radius: 0;
+  min-height: 36px;
 }
 headerbar:backdrop {
-  background-color: #0A0D0A;
+  background-color: rgba(10, 13, 10, 0.80);
   color: rgba(51, 184, 74, 0.55);
 }
-popover > contents { background-color: #0B140D; }
+headerbar windowtitle,
+headerbar .title {
+  font-family: "Cica", monospace;
+}
+headerbar windowtitle .subtitle,
+headerbar .subtitle {
+  font-family: "Cica", monospace;
+}
+popover > contents {
+  background-color: #0B140D;
+  border-radius: 0;
+  border: 1px solid rgba(74, 214, 100, 0.25);
+}
 menubar {
-  background-color: #080B08;
+  background-color: rgba(8, 11, 8, 0.72);
   color: #33B84A;
 }
 placessidebar { background-color: #0A0F0B; }
@@ -8709,5 +8785,70 @@ tooltip {
   background-color: rgba(8, 11, 8, 0.95);
   color: #33B84A;
   border: 1px solid rgba(74, 214, 100, 0.25);
+  border-radius: 0;
+}
+
+/* ---- nautilus (Files) --------------------------------------------------- */
+/* base paints the flap sidebar bright green (#66BB6A, white text, 12px
+   right radius) at (0,2,2)+ — restate the whole block at matching
+   specificity, same trick as the decoration sweep */
+.nautilus-window flap.unfolded > placessidebar {
+  background-color: #0A0F0B;
+  color: #D8E8DA;
+  margin: 0;
+  border-radius: 0;
+}
+.nautilus-window flap.unfolded > placessidebar > scrolledwindow > viewport > list.navigation-sidebar > row.activatable, .nautilus-window flap.unfolded > placessidebar > scrolledwindow > viewport > list.navigation-sidebar > row.activatable image.sidebar-icon, .nautilus-window flap.unfolded > placessidebar > scrolledwindow > viewport > list.navigation-sidebar > row.activatable label.sidebar-label, .nautilus-window flap.unfolded > placessidebar > scrolledwindow > viewport > list.navigation-sidebar > row.activatable button.sidebar-button {
+  color: #D8E8DA;
+}
+.nautilus-window flap.unfolded > placessidebar > scrolledwindow > viewport > list.navigation-sidebar > row.activatable:hover {
+  background-color: rgba(74, 214, 100, 0.12);
+  color: #D8E8DA;
+}
+.nautilus-window flap.unfolded > placessidebar > scrolledwindow > viewport > list.navigation-sidebar > row.activatable:selected {
+  background-color: rgba(74, 214, 100, 0.18);
+}
+.nautilus-window flap.unfolded > placessidebar > scrolledwindow > viewport > list.navigation-sidebar > row.activatable:selected, .nautilus-window flap.unfolded > placessidebar > scrolledwindow > viewport > list.navigation-sidebar > row.activatable:selected image.sidebar-icon, .nautilus-window flap.unfolded > placessidebar > scrolledwindow > viewport > list.navigation-sidebar > row.activatable:selected label.sidebar-label, .nautilus-window flap.unfolded > placessidebar > scrolledwindow > viewport > list.navigation-sidebar > row.activatable:selected button.sidebar-button {
+  color: #4ACC5F;
+}
+.nautilus-window flap.unfolded > placessidebar > scrolledwindow > scrollbar {
+  background-color: transparent;
+}
+
+/* nautilus 48 / modern libadwaita: the sidebar green actually comes from
+   these two (the flap rules above are the 42-era variants) */
+listview.view.navigation-sidebar {
+  background-color: transparent;
+  color: #D8E8DA;
+  margin: 0;
+  border-radius: 0;
+}
+.sidebar-pane toolbarview > scrolledwindow,
+.sidebar-pane toolbarview > placessidebar > scrolledwindow,
+.sidebar-pane toolbarview > stacksidebar.sidebar > scrolledwindow {
+  background-color: #0A0F0B;
+  color: #D8E8DA;
+  margin: 0;
+  border-radius: 0;
+}
+/* selected sidebar row: base solid #66BB6A + white → theme selection colors */
+.navigation-sidebar > row:selected,
+placessidebar .navigation-sidebar > row:selected {
+  background-color: #28A038;
+  color: #071008;
+}
+
+/* translucent file listing: let the window ground show through
+   (Files ground lighter than the global 0.85 so it actually reads) */
+window.nautilus-window {
+  background-color: rgba(12, 18, 13, 0.70);
+}
+.nautilus-window {
+  --view-bg-color: transparent;
+}
+.nautilus-window gridview.view,
+.nautilus-window listview.view,
+.nautilus-window columnview.view {
+  background: transparent;
 }
 /* <<< GreenPhosphor-CRT overrides <<< */
