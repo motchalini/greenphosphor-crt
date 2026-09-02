@@ -186,6 +186,16 @@ Forge 設定画面(`Super + .`)にも「New window attaches to」のドロップ
   ローカルパッチ1本が復活**(新規窓の取り付け先。上のセクション参照)しているので、
   更新後はパッチ再適用+`glib-compile-schemas`+再ログインを忘れない。
 
+- **mission-control からの claude セッションは Tilix のペイン分割で開く**(2026-09-02〜)。
+  常駐パネルは Tilix 窓の右ペイン(`mc-tui`)になり、thread を開くと
+  mission-control 側の `shell/mcopen.py` が「最後に生まれたペイン」をアスペクト比で
+  右/下に分割して `claude --continue` を起動する(Forge の auto-split +
+  `new-window-attach last` と同じ思想を Tilix 内で再現)。Forge がタイルするのは
+  Tilix 窓 1 枚だけになるので、セッションの並びを直すときは Forge のキーではなく
+  Tilix のペイン操作(仕切りのドラッグ / 移動 `Alt+矢印` / リサイズ `Shift+Alt+矢印` /
+  手動分割 `Ctrl+Alt+R`=右・`Ctrl+Alt+D`=下)を使う。詳細は mission-control の
+  README「Tilix ペイン版パネル」。
+
 ## バックアップとロールバック
 
 - ローカルパッチ1〜3適用済みの本家 v89 一式は
