@@ -239,12 +239,44 @@ Forge 設定画面(`Super + .`)にも「New window attaches to」のドロップ
 | 今の窓を WS1〜5 へ移動 | `Shift + Super + 1〜5` |
 | Tilix を新窓で起動 | `Shift + Super + Return`(Forge `prefs-app-launch`、`launch-app-command` = `tilix`。auto-move で WS1 に行くので、他所で使うなら `Shift+Super+N` で移す) |
 | 直前フォーカス窓と位置入替 | `Super + Return`(Forge `window-swap-last-active`。Alt+Tab 順で次の窓=直前にフォーカスしていた窓とツリー上の位置を交換し、ポインタも付いてくる) |
+| 直前のワークスペースへ戻る | `Super + `` ``(Space Bar `activate-previous-key`、i3 の back_and_forth。GNOME の同アプリ内窓切替は `Alt+`` `` のみに) |
 
 `Super+1〜9` は GNOME 既定では dash のお気に入り N 起動(`switch-to-application-N`)。
 1〜5 を空にして付け替えた(6〜9 は既定のまま)。`Super+Return` は 2026-09-11 まで
 カスタムキー「Tilix 起動」(media-keys custom0)と Forge の swap-last-active が二重割当
 だった。カスタムキーを削除して Forge に寄せ、Tilix 起動は Forge の
 `launch-app-command` に移した。
+
+### 左上の表示: Space Bar(2026-09-11)
+
+GNOME 45 以降の左上のワークスペース・ドットを i3 風の名前バーに置き換える拡張
+[Space Bar](https://extensions.gnome.org/extension/5090/space-bar/)
+(UUID `space-bar@luchrioh`、v34、GNOME 46〜49 対応)を導入。`1 COCKPIT  2 WEB …` と
+並び、現在の WS は淡緑の面+燐光緑 1px 枠(スクエア)、窓のある WS は明緑、空の WS は
+暗緑。クリック/ホイールで切替、現在の WS をクリックすると overview。
+
+- **設定のマスターコピーは `src/space-bar/space-bar.dconf`**。復元は
+  `dconf load /org/gnome/shell/extensions/space-bar/ < src/space-bar/space-bar.dconf`。
+  色は個別キー(`appearance.*-workspace-*`)から `application-styles` が自動生成される。
+- キーの整理: Space Bar 独自の Super+1〜9・移動キーは無効(GNOME 側の割当が正)。
+  `open-menu` 既定の `Super+W` は Forge のタイリング ON/OFF と衝突するので空。
+  `activate-empty-key`(`Super+N`)は固定 WS では無意味なので空。
+  `activate-previous-key` = `Super+`` `` は残し、代わりに GNOME の `switch-group` から
+  `<Super>Above_Tab` を外した(`Alt+`` `` は残る)。
+- インストール手順: EGO の zip を `gnome-extensions install` しただけでは Shell が
+  そのセッションでは読まない(再ログインが要る)。再ログインなしで読ませるには Shell の
+  D-Bus `InstallRemoteExtension` を呼ぶ(画面に確認ダイアログが出るので「インストール」):
+
+  ```sh
+  gdbus call --session --timeout 180 --dest org.gnome.Shell.Extensions \
+    --object-path /org/gnome/Shell/Extensions \
+    --method org.gnome.Shell.Extensions.InstallRemoteExtension "space-bar@luchrioh"
+  ```
+
+  gdbus 側は `NoReply` で終わることがあるが、ダイアログで承認すれば ACTIVE になる
+  (2026-09-11 実測)。extension-list 拡張が新規拡張の出現で JS エラーを1回吐くが無害。
+- 外すとき: `gnome-extensions disable space-bar@luchrioh` でドット表示に戻る。
+  `switch-group` を戻すなら `gsettings reset org.gnome.desktop.wm.keybindings switch-group`。
 
 ### 適用コマンド(再現用・適用済み)
 
