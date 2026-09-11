@@ -89,6 +89,8 @@ Forge の既定キー(i3 風 Super+hjkl)と衝突する GNOME 標準キーを付
 | `Super+H` | ウィンドウ最小化 | **解除**(Forge: 左へフォーカス) |
 | `Super+L` | **画面ロック** | ロックは **`Super+Escape`** へ移動(Forge: 右へフォーカス) |
 | `Super+V` | 通知トレイ | 通知は `Super+M` のみに(Forge: 縦分割) |
+| `Super+1〜5` | dash のお気に入り N を起動 | **ワークスペース 1〜5 へ切替**(2026-09-11。詳細は「ワークスペース運用」) |
+| `Super+Return` | (カスタムキー)Tilix 起動 | **解除**(Forge: 直前フォーカス窓と位置入替)。Tilix 起動は `Shift+Super+Return` へ |
 
 ```sh
 gsettings set org.gnome.desktop.wm.keybindings minimize "[]"
@@ -106,6 +108,7 @@ gsettings set org.gnome.shell.keybindings toggle-message-tray "['<Super>m']"
 | ウィンドウ移動 | `Shift + Super + H / J / K / L` |
 | ウィンドウ入替(swap) | `Ctrl + Super + H / J / K / L` |
 | 直前のアクティブ窓と入替 | `Super + Enter` |
+| Tilix を新窓で起動(`launch-app-command`) | `Shift + Super + Enter` |
 | 縦分割 / 横分割 | `Super + V` / `Super + Z` |
 | 分割方向トグル | `Super + G` |
 | スタック / タブ化 | `Shift + Super + S` / `Shift + Super + T` |
@@ -195,6 +198,105 @@ Forge 設定画面(`Super + .`)にも「New window attaches to」のドロップ
   Tilix のペイン操作(仕切りのドラッグ / 移動 `Alt+矢印` / リサイズ `Shift+Alt+矢印` /
   手動分割 `Ctrl+Alt+R`=右・`Ctrl+Alt+D`=下)を使う。詳細は mission-control の
   README「Tilix ペイン版パネル」。
+
+## ワークスペース運用(2026-09-11 決定)
+
+**固定5枚・役割固定(i3 流)**。GNOME の動的ワークスペースは「中間の空ワークスペース」を
+自動で消すため、番号と役割を結び付ける運用ができない。固定にして `Super+数字` で
+直接飛ぶ。
+
+| WS | 名前 | 入れるもの | 自動配置(auto-move-windows) |
+| --- | --- | --- | --- |
+| 1 | COCKPIT | **Tilix だけ**(シェル+mission-control+claude ペイン) | `com.gexperts.Tilix.desktop:1` |
+| 2 | WEB | Brave と Claude/GitHub/GitLab の PWA | `brave-browser.desktop:2` |
+| 3 | CODE | VS Code | `code.desktop:3` |
+| 4 | TALK | Signal / Telegram Web / Proton Mail | `signal-desktop.desktop:4` ほか |
+| 5 | STUDIO | Inkscape / Blender / GIMP など浮動向きのアプリ | なし。**タイル停止** |
+
+- **WS1 が Tilix の「全画面」**: Forge は単窓のときギャップを消す
+  (`window-gap-hidden-on-single`)ので、Tilix 1枚で作業領域いっぱいになる。
+  上バーまで消したいときだけ Tilix の `F11`(フォークは全画面窓を TILE のまま保持し
+  再分割しない=forge-fw8)。WS1 に他の窓を開かないのが前提。
+- **通常作業は WS5 ではなく役割別**(2 Web / 3 Code / 4 Talk)。自動配置ルールの無い
+  アプリ(Files、画像ビューア、LibreOffice、PDF など)は**今いるワークスペース**に開き、
+  auto-split でその場の窓の隣に付く。用が済んだら閉じる、が基本の作法。
+  長時間の整理作業なら WS5 で普通の重なり窓として使ってもよい。
+- **WS5 はタイル停止**: Forge の `workspace-skip-tile` = `4`(0 始まりの索引)。
+  `Shift+Super+W` でも同じ値がトグルされる(永続化される)。
+- **机の2画面時**: `org.gnome.mutter workspaces-only-on-primary` = true なので
+  副画面(HDMI-1)はワークスペースの外の固定領域。Brave を副画面に置けば
+  Tilix 全画面とブラウザを同時に見られる。ノート単体では `Super+1` / `Super+2` の往復。
+- `Alt+Tab`(`switch-applications`)は全ワークスペース横断のまま
+  (`org.gnome.shell.app-switcher current-workspace-only` = false)。アプリを選ぶと
+  そのワークスペースへ飛ぶ。
+- 名前(`workspace-names`)は GNOME 標準 UI にはほぼ出ない。自分の呼び名として設定してある。
+
+### キー
+
+| 操作 | キー |
+| --- | --- |
+| WS1〜5 へ切替 | `Super + 1〜5`(`Super+Home/End` = 1/5、`Super+PgUp/PgDn` = 隣も残置) |
+| 今の窓を WS1〜5 へ移動 | `Shift + Super + 1〜5` |
+| Tilix を新窓で起動 | `Shift + Super + Return`(Forge `prefs-app-launch`、`launch-app-command` = `tilix`。auto-move で WS1 に行くので、他所で使うなら `Shift+Super+N` で移す) |
+| 直前フォーカス窓と位置入替 | `Super + Return`(Forge `window-swap-last-active`。Alt+Tab 順で次の窓=直前にフォーカスしていた窓とツリー上の位置を交換し、ポインタも付いてくる) |
+
+`Super+1〜9` は GNOME 既定では dash のお気に入り N 起動(`switch-to-application-N`)。
+1〜5 を空にして付け替えた(6〜9 は既定のまま)。`Super+Return` は 2026-09-11 まで
+カスタムキー「Tilix 起動」(media-keys custom0)と Forge の swap-last-active が二重割当
+だった。カスタムキーを削除して Forge に寄せ、Tilix 起動は Forge の
+`launch-app-command` に移した。
+
+### 適用コマンド(再現用・適用済み)
+
+```sh
+gsettings set org.gnome.mutter dynamic-workspaces false
+gsettings set org.gnome.desktop.wm.preferences num-workspaces 5
+gsettings set org.gnome.desktop.wm.preferences workspace-names "['COCKPIT','WEB','CODE','TALK','STUDIO']"
+for i in 1 2 3 4 5; do
+  gsettings set org.gnome.shell.keybindings switch-to-application-$i "[]"
+  gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-$i "['<Super>$i']"
+  gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-$i "['<Super><Shift>$i']"
+done
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Super>1','<Super>Home']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 "['<Super><Shift>1','<Super><Shift>Home']"
+d=~/.local/share/gnome-shell/extensions/auto-move-windows@gnome-shell-extensions.gcampax.github.com/schemas
+gsettings --schemadir $d set org.gnome.shell.extensions.auto-move-windows application-list \
+  "['com.gexperts.Tilix.desktop:1','brave-browser.desktop:2','code.desktop:3','signal-desktop.desktop:4','proton-mail.desktop:4','brave-ibblmnobmgdmpoeblocemifbpglakpoi-Default.desktop:4']"
+# カスタムキー Super+Return(Tilix 起動)を削除。custom1 = Mission Control Capture(Super+I)は残す
+gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings \
+  "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/']"
+dconf reset -f /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/
+f=~/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas
+gsettings --schemadir $f set org.gnome.shell.extensions.forge launch-app-command 'tilix'
+gsettings --schemadir $f set org.gnome.shell.extensions.forge workspace-skip-tile '4'
+```
+
+全部 gsettings なので再ログイン不要・即時反映。適用時点で開いていた窓は元の場所に
+残るので、初回だけ Tilix を `Shift+Super+1`、Brave を `Shift+Super+2` で移す。
+Brave の PWA は `brave-<id>-Default.desktop` という個別 ID を持つので、Telegram Web
+(`ibblmnob…`)だけ WS4 に送っている(ID は `~/.local/share/applications/` で確認)。
+
+### 巻き戻し
+
+```sh
+gsettings reset org.gnome.mutter dynamic-workspaces
+gsettings reset org.gnome.desktop.wm.preferences num-workspaces
+gsettings reset org.gnome.desktop.wm.preferences workspace-names
+for i in 1 2 3 4 5; do
+  gsettings reset org.gnome.shell.keybindings switch-to-application-$i
+  gsettings reset org.gnome.desktop.wm.keybindings switch-to-workspace-$i
+  gsettings reset org.gnome.desktop.wm.keybindings move-to-workspace-$i
+done
+d=~/.local/share/gnome-shell/extensions/auto-move-windows@gnome-shell-extensions.gcampax.github.com/schemas
+gsettings --schemadir $d set org.gnome.shell.extensions.auto-move-windows application-list \
+  "['code.desktop:2','com.gexperts.Tilix.desktop:2']"   # 9/11 以前の値
+f=~/.local/share/gnome-shell/extensions/forge@jmmaranan.com/schemas
+gsettings --schemadir $f set org.gnome.shell.extensions.forge workspace-skip-tile ''
+gsettings --schemadir $f set org.gnome.shell.extensions.forge launch-app-command 'gnome-terminal'
+```
+
+(削除したカスタムキー Super+Return は GNOME 設定の「キーボード → カスタムショートカット」で
+コマンド `tilix` を登録し直せば戻る)
 
 ## バックアップとロールバック
 
