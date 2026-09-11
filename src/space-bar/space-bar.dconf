@@ -1,0 +1,43 @@
+[appearance]
+active-workspace-background-color='rgba(102,224,122,0.18)'
+active-workspace-border-color='rgba(102,224,122,0.9)'
+active-workspace-border-radius=0
+active-workspace-border-width=1
+active-workspace-font-weight='700'
+active-workspace-text-color='rgba(134,217,152,1)'
+application-styles='.space-bar {\n  -natural-hpadding: 12px;\n}\n\n.space-bar-workspace-label.active {\n  margin: 0 2px;\n  background-color: rgba(102,224,122,0.18);\n  color: rgba(134,217,152,1);\n  border-color: rgba(102,224,122,0.9);\n  font-weight: 700;\n  border-radius: 0px;\n  border-width: 1px;\n  padding: 3px 8px;\n}\n\n.space-bar-workspace-label.inactive {\n  margin: 0 2px;\n  background-color: rgba(0,0,0,0);\n  color: rgba(61,191,82,1);\n  border-color: rgba(0,0,0,0);\n  font-weight: 700;\n  border-radius: 0px;\n  border-width: 1px;\n  padding: 3px 8px;\n}\n\n.space-bar-workspace-label.inactive.empty {\n  margin: 0 2px;\n  background-color: rgba(0,0,0,0);\n  color: rgba(40,160,56,0.5);\n  border-color: rgba(0,0,0,0);\n  font-weight: 700;\n  border-radius: 0px;\n  border-width: 1px;\n  padding: 3px 8px;\n}'
+empty-workspace-background-color='rgba(0,0,0,0)'
+empty-workspace-border-color='rgba(0,0,0,0)'
+empty-workspace-border-radius=0
+empty-workspace-border-radius-active=true
+empty-workspace-border-width=1
+empty-workspace-border-width-active=true
+empty-workspace-text-color='rgba(40,160,56,0.5)'
+inactive-workspace-background-color='rgba(0,0,0,0)'
+inactive-workspace-border-color='rgba(0,0,0,0)'
+inactive-workspace-border-radius=0
+inactive-workspace-border-radius-active=true
+inactive-workspace-border-width=1
+inactive-workspace-border-width-active=true
+inactive-workspace-text-color='rgba(61,191,82,1)'
+inactive-workspace-text-color-active=true
+workspace-margin=2
+
+[behavior]
+custom-label-named='{{number}} {{name}}'
+custom-label-unnamed='{{number}}'
+enable-custom-label=true
+show-empty-workspaces=true
+smart-workspace-names=false
+system-workspace-indicator=false
+toggle-overview=true
+
+[shortcuts]
+activate-empty-key=@as []
+activate-previous-key=['<Super>grave']
+enable-activate-workspace-shortcuts=false
+enable-move-to-workspace-shortcuts=false
+open-menu=@as []
+
+[state]
+version=34
