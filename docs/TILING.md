@@ -198,6 +198,10 @@ Forge 設定画面(`Super + .`)にも「New window attaches to」のドロップ
   Tilix のペイン操作(仕切りのドラッグ / 移動 `Alt+矢印` / リサイズ `Shift+Alt+矢印` /
   手動分割 `Ctrl+Alt+R`=右・`Ctrl+Alt+D`=下)を使う。詳細は mission-control の
   README「Tilix ペイン版パネル」。
+- **セッション起動時の左ペインは「天気の窓」`tools/phosphor-window.py`**(2026-10-02〜)。
+  空のシェルが余っていたのを、仕事と無関係の眺めるもの(実際の天気の窓+うさぎ)で埋めた。
+  `q` でその場でシェルに降りる(戻るには再実行)。claude ペインはこの窓を右に割って生え、
+  窓は縮んだ幅で描き直す。座標は `~/.config/phosphor-window/config.json`(リポジトリ外)。
 
 ## ワークスペース運用(2026-09-11 決定)
 
@@ -207,7 +211,7 @@ Forge 設定画面(`Super + .`)にも「New window attaches to」のドロップ
 
 | WS | 名前 | 入れるもの | 自動配置(auto-move-windows) |
 | --- | --- | --- | --- |
-| 1 | COCKPIT | **Tilix だけ**(シェル+mission-control+claude ペイン) | `com.gexperts.Tilix.desktop:1` |
+| 1 | COCKPIT | **Tilix だけ**(天気の窓+mission-control+claude ペイン) | `com.gexperts.Tilix.desktop:1` |
 | 2 | WEB | Brave と Claude/GitHub/GitLab の PWA | `brave-browser.desktop:2` |
 | 3 | CODE | VS Code | `code.desktop:3` |
 | 4 | TALK | Signal / Telegram Web / Proton Mail | `signal-desktop.desktop:4` ほか |
