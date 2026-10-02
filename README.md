@@ -109,6 +109,51 @@ The shipped files were rendered with:
 use their alpha channel directly. `--glow-tint 0..1` (default 0.35)
 controls how much halos around the artwork are tinted toward phosphor green.
 
+## Phosphor window (an ambient Tilix pane)
+
+`tools/phosphor-window.py` turns an idle terminal pane into a quiet window:
+a small landscape outside that follows the real weather and time of day
+(sun, the moon in its actual phase, stars, clouds, rain, snow, fog, the odd
+flicker of lightning), a wall clock, and a rabbit that lives on the floor
+below the window. The rabbit has no needs and nothing to look after; it
+naps, grooms, nibbles hay and watches the rain. Python 3 standard library
+only; 24-bit green only, and the background is left transparent.
+
+```sh
+./tools/phosphor-window.py
+```
+
+Run it in a pane, or make it the pane's command (e.g. a Tilix session's
+`overrideCommand`). Press `q` (or Ctrl+C) to drop to a shell in the same
+pane: as the pane's own command it is replaced by your `$SHELL` (the pane
+stays open); started from a prompt, it simply returns to that prompt. Run
+`tools/phosphor-window.py` again to bring the window back. Space makes the
+rabbit turn to you.
+
+Live weather is optional. Create `~/.config/phosphor-window/config.json`
+(this example is Tokyo Station):
+
+```json
+{"latitude": 35.681, "longitude": 139.767, "timezone": "Asia/Tokyo"}
+```
+
+It then asks [Open-Meteo](https://open-meteo.com/) (no API key) every 20
+minutes and caches the answer in `~/.cache/phosphor-window/weather.json`.
+Without the file nothing is fetched and the sky stays clear. Network
+failures are silent.
+
+| Flag | |
+| --- | --- |
+| `--once [COLSxROWS]` | print one coloured frame and exit |
+| `--dump COLSxROWS` | print one frame as plain text and exit |
+| `--weather clear\|clouds\|rain\|snow\|fog\|thunder` | fix the weather (no network) |
+| `--time HH:MM`, `--date YYYY-MM-DD` | fix the clock |
+| `--offline` | never use the network |
+| `--seed N` | fix the landscape and the rabbit's choices |
+| `--rabbit sit\|hop\|groom\|eat\|look\|loaf\|sleep\|binky\|flop\|front` | keep the rabbit doing one thing |
+
+Tests: `python3 -m unittest discover -s tests`.
+
 ## Goes well with
 
 - Tela green (dark) icon theme
