@@ -25,6 +25,11 @@ append() {
 }
 
 T=themes/GreenPhosphor-CRT
-append src/overrides/gnome-shell-overrides.css "$T/gnome-shell/gnome-shell.css"
+# Shell: generated corner caps first, hand-written overrides after (they win ties).
+shell_src=$(mktemp)
+trap 'rm -f "$shell_src"' EXIT
+python3 src/overrides/gnome-shell-corners.py "$T/gnome-shell/gnome-shell.css" "$BEGIN" > "$shell_src"
+cat src/overrides/gnome-shell-overrides.css >> "$shell_src"
+append "$shell_src" "$T/gnome-shell/gnome-shell.css"
 append src/overrides/gtk-3.0-overrides.css     "$T/gtk-3.0/gtk.css" "$T/gtk-3.0/gtk-dark.css"
 append src/overrides/gtk-4.0-overrides.css     "$T/gtk-4.0/gtk.css" "$T/gtk-4.0/gtk-dark.css"
