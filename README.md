@@ -161,9 +161,22 @@ Tests: `python3 -m unittest discover -s tests`.
 - GNOME accent color "green"
 - Dark Style
 
+### Blur my Shell
+
+Since v74, Blur my Shell blurs the popups too (menus, calendar, quick
+settings, notifications, OSDs). On GNOME 48 its default (dynamic) blur is
+a plain rectangle, so the theme keeps those popup surfaces square to match.
+Blur my Shell also sets each popup's corner radius itself (from its own
+settings, overriding the theme), so if you use it, load these settings too
+— otherwise the popups come back rounded over a square blur:
+
+```sh
+dconf load /org/gnome/shell/extensions/blur-my-shell/popup/ < src/blur-my-shell/popup.dconf
+```
+
 ## Development
 
-`src/overrides/` holds the source CSS. `build.sh` regenerates the built CSS under `themes/` by appending these overrides as marked sections. `src/wallpaper/generate.py` renders the wallpapers (deterministic, fixed seed — the shipped PNGs are byte-reproducible with the commands above); shared palette/math lives in `src/wallpaper/crtlib.py`, also used by `tools/crtify.py`.
+`src/overrides/` holds the source CSS. `build.sh` regenerates the built CSS under `themes/` by appending these overrides as marked sections. For the shell it first runs `src/overrides/gnome-shell-corners.py`, which re-emits every rounded rule of the vendored base with its radius capped at 3px (`MAX_PX`), so the base stays untouched. `src/wallpaper/generate.py` renders the wallpapers (deterministic, fixed seed — the shipped PNGs are byte-reproducible with the commands above); shared palette/math lives in `src/wallpaper/crtlib.py`, also used by `tools/crtify.py`.
 
 ## Credits & License
 

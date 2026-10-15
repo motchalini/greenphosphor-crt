@@ -2,7 +2,8 @@
  * GreenPhosphor-CRT  —  overrides appended onto Graphite-green-Dark
  * Top panel styled as a green-phosphor CRT readout: deep green-black
  * ground, phosphor-green text/icons with a soft glow, monospace clock.
- * Everything else (menus, quick settings, calendar) stays Graphite-green.
+ * Everything else (menus, quick settings, calendar) stays Graphite-green,
+ * with corners squared off (see "Corners" at the end of this file).
  * ===================================================================== */
 
 #panel {
@@ -81,6 +82,19 @@
 .popup-menu .popup-menu-content {
   background-color: #080B08;
   border: 2px solid #2E7D3E;
+}
+
+/* Green frames glow faintly, like a lit phosphor trace: a soft bloom just
+ * inside the edge, brighter green at low alpha so the line itself stays
+ * the brightest part. Inset, not an outer halo: St doesn't cut an outer
+ * shadow out of the box, so under Blur my Shell's translucent surfaces it
+ * tints the whole interior green.
+ * Same frame on dialogs and the screenshot panel (base: #66BB6A). */
+.popup-menu .popup-menu-content,
+.modal-dialog,
+.screenshot-ui-panel {
+  border-color: #2E7D3E;
+  box-shadow: inset 0 0 5px 0 rgba(74, 224, 112, 0.20);
 }
 .quick-settings .quick-toggle,
 .quick-settings .quick-slider,
@@ -354,4 +368,55 @@ StScrollBar StButton#hhandle,
 .screen-shield-clock,
 .screen-shield-clock .clock {
   color: #33B84A !important;
+}
+
+/* ============================================================= *
+ * Corners. Everything else was capped at 3px by the generated
+ * block above (gnome-shell-corners.py); these surfaces go to 0.
+ * ============================================================= */
+
+/* Popup surfaces (Blur my Shell's blur targets): square.
+ * Blur my Shell (v74+) puts a blurred rectangle behind each of these; its
+ * dynamic blur cannot be rounded on GNOME 48 (Shell.BlurEffect has no
+ * corner-radius), so a rounded surface leaves the blur's square corners
+ * showing outside the curve.
+ * NOTE: with its popup "override-background" on (the default), Blur my
+ * Shell writes border-radius into each surface's inline style from its own
+ * *-corner-radius keys, and inline style beats any theme CSS. Load
+ * src/blur-my-shell/popup.dconf (all 0) — these rules alone are not enough
+ * then. They cover Blur my Shell off / override-background off.
+ * !important only to beat the base's own !important pins
+ * (.datemenu-popover / .quick-settings / .quick-toggle-menu). */
+.popup-menu-content,
+.datemenu-popover,
+.quick-settings,
+.quick-toggle-menu,
+.candidate-popup-content,
+.notification-banner,
+.screenshot-ui-panel,
+.osd-window,
+.resize-popup,
+.switcher-list,
+.workspace-switcher,
+.modal-dialog,
+.run-dialog {
+  border-radius: 0 !important;
+}
+
+/* Blur my Shell rounds sub-menu bottoms at 12–13px. Its popup CSS comes in
+ * via @import, which St ranks below the theme, but say it explicitly. */
+.popup-sub-menu > StBoxLayout,
+.popup-sub-menu .popup-menu-section,
+.popup-sub-menu .popup-menu-item:last-child {
+  border-radius: 0 0 3px 3px !important;
+}
+
+/* Rounding that comes from GNOME's default stylesheet (loaded under the
+ * theme) on elements Graphite never restyles, so the generator can't see it:
+ * monitor-number labels, the workspace-switcher OSD pill, app-grid page dots. */
+.osd-monitor-label,
+.osd-break-countdown-label,
+.ws-switcher-indicator,
+.page-indicator .page-indicator-icon {
+  border-radius: 3px;
 }
