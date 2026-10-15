@@ -5300,6 +5300,50 @@ StScrollBar StButton#hhandle {
   background-color: #131612;
 }
 
+/* Smoked glass under Blur my Shell. It swaps the popup ground for a
+ * near-clear grey (rgba(45,45,50,0.22) !important) over its blur at 0.6
+ * brightness, so over a white window the popup turns mid-grey and the
+ * green text drops below 2:1. Lay the theme's green-black back on at 0.65:
+ * over a white window the ground lands near #3B3B3B (text ~4.3:1, helped
+ * by the halo below) and the glass still reads as glass. Over white,
+ * see-through and legible pull against each other: 0.80 gave ~5.9:1 but
+ * looked opaque. Scoped to Blur my Shell's style classes (set on
+ * Main.uiGroup) so the popups stay opaque when it is off. !important to
+ * beat its !important (its @import'ed CSS ranks below the theme's). */
+.bms-popup-background-dark .popup-menu-content,
+.bms-popup-surface-dark .popup-menu-content,
+.bms-popup-background-transparent .popup-menu-content,
+.bms-popup-surface-transparent .popup-menu-content,
+.bms-popup-background-light .popup-menu-content,
+.bms-popup-surface-light .popup-menu-content {
+  background-color: rgba(8, 11, 8, 0.65) !important;
+}
+.bms-popup-background-dark .quick-toggle-menu,
+.bms-popup-surface-dark .quick-toggle-menu,
+.bms-popup-background-transparent .quick-toggle-menu,
+.bms-popup-surface-transparent .quick-toggle-menu,
+.bms-popup-background-light .quick-toggle-menu,
+.bms-popup-surface-light .quick-toggle-menu {
+  background-color: rgba(19, 22, 18, 0.72) !important;
+}
+
+/* A dark halo behind popup text keeps the glyph edges crisp when a bright
+ * window shows through; on a dark ground it is invisible. text-shadow
+ * inherits in St, but the base switches it off (none) on menu items and
+ * the calendar parts, so those are restated with the same selectors. */
+.popup-menu-content,
+.popup-menu .popup-menu-item,
+.world-clocks-button,
+.weather-button,
+.events-button,
+.events-button .events-list,
+.events-button .events-title,
+.datemenu-today-button,
+.calendar,
+.calendar .calendar-month-label {
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
+}
+
 /* notification cards in the calendar popover → near-black like Tilix (not Graphite grey) */
 .message,
 .message-view .message,
