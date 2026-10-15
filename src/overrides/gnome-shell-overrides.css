@@ -83,6 +83,19 @@
   background-color: #080B08;
   border: 2px solid #2E7D3E;
 }
+
+/* Green frames glow faintly, like a lit phosphor trace: a soft bloom just
+ * inside the edge, brighter green at low alpha so the line itself stays
+ * the brightest part. Inset, not an outer halo: St doesn't cut an outer
+ * shadow out of the box, so under Blur my Shell's translucent surfaces it
+ * tints the whole interior green.
+ * Same frame on dialogs and the screenshot panel (base: #66BB6A). */
+.popup-menu .popup-menu-content,
+.modal-dialog,
+.screenshot-ui-panel {
+  border-color: #2E7D3E;
+  box-shadow: inset 0 0 5px 0 rgba(74, 224, 112, 0.20);
+}
 .quick-settings .quick-toggle,
 .quick-settings .quick-slider,
 .quick-settings .quick-toggle-menu {
