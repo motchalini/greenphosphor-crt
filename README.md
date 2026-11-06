@@ -172,6 +172,20 @@ settings, overriding the theme), so if you use it, load these settings too
 
 ```sh
 dconf load /org/gnome/shell/extensions/blur-my-shell/popup/ < src/blur-my-shell/popup.dconf
+dconf load /org/gnome/shell/extensions/blur-my-shell/overview/ < src/blur-my-shell/overview.dconf
+```
+
+`overview.dconf` matters from v77, which rounds the overview's workspace
+backgrounds itself (default 30px); it keeps them at the theme's 3px.
+
+Blur my Shell updates tend to add new per-popup radius keys with rounded
+defaults (v76 split out the calendar, quick-settings submenus, volume OSD,
+input-method candidates and resize popup), so after an update, check for
+keys that are not 0 and add them to `popup.dconf`:
+
+```sh
+gsettings --schemadir ~/.local/share/gnome-shell/extensions/blur-my-shell@aunetx/schemas \
+  list-recursively org.gnome.shell.extensions.blur-my-shell.popup | grep radius
 ```
 
 ## Development
