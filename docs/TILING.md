@@ -223,7 +223,7 @@ Forge 設定画面(`Super + .`)にも「New window attaches to」のドロップ
 | --- | --- | --- | --- |
 | 1 | COCKPIT | **Tilix だけ**(天気の窓+mission-control+claude ペイン) | `com.gexperts.Tilix.desktop:1` |
 | 2 | WEB | Brave と Claude/GitHub/GitLab の PWA | `brave-browser.desktop:2` |
-| 3 | CODE | VS Code | `code.desktop:3` |
+| 3 | DOCS | 書類・PDF・LibreOffice・ファイル整理 | なし(WS3 に切り替えてから開く) |
 | 4 | TALK | Signal / Telegram Web / Proton Mail | `signal-desktop.desktop:4` ほか |
 | 5 | STUDIO | Inkscape / Blender / GIMP など浮動向きのアプリ | なし。**タイル停止** |
 
@@ -231,9 +231,10 @@ Forge 設定画面(`Super + .`)にも「New window attaches to」のドロップ
   (`window-gap-hidden-on-single`)ので、Tilix 1枚で作業領域いっぱいになる。
   上バーまで消したいときだけ Tilix の `F11`(フォークは全画面窓を TILE のまま保持し
   再分割しない=forge-fw8)。WS1 に他の窓を開かないのが前提。
-- **通常作業は WS5 ではなく役割別**(2 Web / 3 Code / 4 Talk)。自動配置ルールの無い
+- **通常作業は WS5 ではなく役割別**(2 Web / 3 Docs / 4 Talk)。自動配置ルールの無い
   アプリ(Files、画像ビューア、LibreOffice、PDF など)は**今いるワークスペース**に開き、
-  auto-split でその場の窓の隣に付く。用が済んだら閉じる、が基本の作法。
+  auto-split でその場の窓の隣に付く。用が済んだら閉じる、が基本の作法。書類をまとめて
+  扱うときは先に `Super+3` で WS3(DOCS)へ移ってから開く。
   長時間の整理作業なら WS5 で普通の重なり窓として使ってもよい。
 - **WS5 はタイル停止**: Forge の `workspace-skip-tile` = `4`(0 始まりの索引)。
   `Shift+Super+W` でも同じ値がトグルされる(永続化される)。
@@ -243,7 +244,9 @@ Forge 設定画面(`Super + .`)にも「New window attaches to」のドロップ
 - `Alt+Tab`(`switch-applications`)は全ワークスペース横断のまま
   (`org.gnome.shell.app-switcher current-workspace-only` = false)。アプリを選ぶと
   そのワークスペースへ飛ぶ。
-- 名前(`workspace-names`)は GNOME 標準 UI にはほぼ出ない。自分の呼び名として設定してある。
+- 名前(`workspace-names`)は Space Bar(下記)が左上に表示する。
+- **WS3 は 2026-11-28 に CODE → DOCS**。VS Code を開かなくなったため。VS Code を WS3 へ送る
+  自動配置(`code.desktop:3`)も外したので、たまに開くと今いるワークスペースに出る。
 
 ### キー
 
@@ -297,7 +300,7 @@ GNOME 45 以降の左上のワークスペース・ドットを i3 風の名前�
 ```sh
 gsettings set org.gnome.mutter dynamic-workspaces false
 gsettings set org.gnome.desktop.wm.preferences num-workspaces 5
-gsettings set org.gnome.desktop.wm.preferences workspace-names "['COCKPIT','WEB','CODE','TALK','STUDIO']"
+gsettings set org.gnome.desktop.wm.preferences workspace-names "['COCKPIT','WEB','DOCS','TALK','STUDIO']"
 for i in 1 2 3 4 5; do
   gsettings set org.gnome.shell.keybindings switch-to-application-$i "[]"
   gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-$i "['<Super>$i']"
@@ -307,7 +310,7 @@ gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-1 "['<Super>1
 gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-1 "['<Super><Shift>1','<Super><Shift>Home']"
 d=~/.local/share/gnome-shell/extensions/auto-move-windows@gnome-shell-extensions.gcampax.github.com/schemas
 gsettings --schemadir $d set org.gnome.shell.extensions.auto-move-windows application-list \
-  "['com.gexperts.Tilix.desktop:1','brave-browser.desktop:2','code.desktop:3','signal-desktop.desktop:4','proton-mail.desktop:4','brave-ibblmnobmgdmpoeblocemifbpglakpoi-Default.desktop:4']"
+  "['com.gexperts.Tilix.desktop:1','brave-browser.desktop:2','signal-desktop.desktop:4','proton-mail.desktop:4','brave-ibblmnobmgdmpoeblocemifbpglakpoi-Default.desktop:4']"
 # カスタムキー Super+Return(Tilix 起動)を削除。custom1 = Mission Control Capture(Super+I)は残す
 gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings \
   "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/']"
